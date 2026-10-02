@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sara Wallet</title>
+    <!--
+      The Content-Security-Policy is injected as a response header by the main
+      process (see src/main/index.ts) so it can be strict in packaged builds
+      and permissive enough for Vite's dev server in development. A meta tag
+      here would have to satisfy both at once.
+    -->
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

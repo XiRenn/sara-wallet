@@ -1,0 +1,2512 @@
+/* ==========================================================================
+   Sara Wallet — desktop design system
+   --------------------------------------------------------------------------
+   One token layer drives the whole app. Light is the default; dark is opt-in
+   by putting `data-theme="dark"` on <html> (see `src/theme.ts`). Components
+   read tokens only — the single exception is the pair of money-direction
+   constants, which are documented below because they are a product decision,
+   not a styling one.
+
+   Sizes come from the density layer at the top of `:root`: `--density` is the
+   knob, `--fs-*` is the type ramp and `--px-*` is every length in the app.
+   Nothing below should carry a bare px length that a token already covers.
+   ========================================================================== */
+
+:root {
+  color-scheme: light;
+
+  /* ── Density ──────────────────────────────────────────────────────────── */
+  /* The single knob that sizes the desktop UI. Everything below is derived
+     from it, so "make the app smaller" is one number rather than a sweep
+     through 2,300 lines. `1` reproduces the original hand-tuned sizes
+     exactly; the app ships at 0.9.
+
+     Not scaled, on purpose: the window chrome (`.topbar`, `.window-btn`,
+     `.titlebar-strip`, `.icon-only`, the avatar), 1px hairlines, the
+     scrollbars, and the media-query breakpoints. The first group answers to
+     the OS caption metrics rather than to content — a 44px title bar is 44px
+     because Windows' caption cluster lives in it — and the rest are optical
+     constants, not proportions. */
+  --density: 0.9;
+
+  /* ── Type ─────────────────────────────────────────────────────────────── */
+  /* Roles, not sizes. These ten steps replace the seventeen ad-hoc sizes the
+     file used to carry, four of which were 0.5px apart. A rule picks a step;
+     it does not invent a number. */
+  --fs-3xs: calc(10.5px * var(--density));                /* version chip · th · badge · currency */
+  --fs-2xs: calc(11.5px * var(--density));                /* uppercase label · pill · tab count */
+  --fs-xs: calc(12.5px * var(--density));                 /* hint · meta · chip · legend */
+  --fs-sm: calc(13.5px * var(--density));                 /* body copy · button · tab · link */
+  --fs-md: calc(14.5px * var(--density));                 /* row name · balance · panel title */
+  --fs-lg: calc(18px * var(--density));                   /* dialog title */
+  --fs-xl: calc(22px * var(--density));                   /* auth title · sidebar total */
+  --fs-2xl: calc(25px * var(--density));                  /* summary tile value */
+  --fs-3xl: calc(27px * var(--density));                  /* amount input */
+  --fs-4xl: calc(29px * var(--density));                  /* hero value */
+
+  /* ── Lengths ──────────────────────────────────────────────────────────── */
+  /* Every length in the app at `--density: 1`, in one table — the suffix is
+     the px, so `--px-12` is the 12px step. Collected from the file rather
+     than invented, so the refactor is exact: nothing moved when this layer
+     landed, and the only thing that changes the geometry now is `--density`.
+
+     Radii alias into the same table (`--radius` is `--px-12`), because a
+     radius is a length and scaling one without the other is how a shrunken
+     card ends up looking swollen. */
+  --px-2: calc(2px * var(--density));
+  --px-3: calc(3px * var(--density));
+  --px-4: calc(4px * var(--density));
+  --px-5: calc(5px * var(--density));
+  --px-6: calc(6px * var(--density));
+  --px-7: calc(7px * var(--density));
+  --px-8: calc(8px * var(--density));
+  --px-9: calc(9px * var(--density));
+  --px-10: calc(10px * var(--density));
+  --px-11: calc(11px * var(--density));
+  --px-12: calc(12px * var(--density));
+  --px-13: calc(13px * var(--density));
+  --px-14: calc(14px * var(--density));
+  --px-15: calc(15px * var(--density));
+  --px-16: calc(16px * var(--density));
+  --px-18: calc(18px * var(--density));
+  --px-20: calc(20px * var(--density));
+  --px-21: calc(21px * var(--density));
+  --px-22: calc(22px * var(--density));
+  --px-24: calc(24px * var(--density));
+  --px-26: calc(26px * var(--density));
+  --px-28: calc(28px * var(--density));
+  --px-30: calc(30px * var(--density));
+  --px-32: calc(32px * var(--density));
+  --px-34: calc(34px * var(--density));
+  --px-36: calc(36px * var(--density));
+  --px-42: calc(42px * var(--density));
+  --px-44: calc(44px * var(--density));
+  --px-52: calc(52px * var(--density));
+  --px-56: calc(56px * var(--density));
+  --px-60: calc(60px * var(--density));
+  --px-74: calc(74px * var(--density));
+  --px-76: calc(76px * var(--density));
+  --px-80: calc(80px * var(--density));
+  --px-82: calc(82px * var(--density));
+  --px-90: calc(90px * var(--density));
+  --px-92: calc(92px * var(--density));
+  --px-104: calc(104px * var(--density));
+  --px-120: calc(120px * var(--density));
+  --px-148: calc(148px * var(--density));
+  --px-156: calc(156px * var(--density));
+  --px-160: calc(160px * var(--density));
+  --px-168: calc(168px * var(--density));
+  --px-180: calc(180px * var(--density));
+  --px-188: calc(188px * var(--density));
+  --px-190: calc(190px * var(--density));
+  --px-200: calc(200px * var(--density));
+  --px-286: calc(286px * var(--density));
+  --px-330: calc(330px * var(--density));
+  --px-408: calc(408px * var(--density));
+  --px-412: calc(412px * var(--density));
+  --px-460: calc(460px * var(--density));
+  --px-500: calc(500px * var(--density));
+  --px-520: calc(520px * var(--density));
+
+  /* ── Surfaces ─────────────────────────────────────────────────────────── */
+  --bg: #f3f5fb;
+  --bg-accent: #e8ecf7;
+  --surface: #ffffff;
+  --surface-muted: #f2f4f9;
+  --surface-sunken: #e5e9f3;
+
+  --border: #e3e7f1;
+  --border-strong: #ccd3e3;
+
+  /* ── Text ─────────────────────────────────────────────────────────────── */
+  /* Muted and faint are both checked against WCAG AA (4.5:1) on the card
+     surface — faint is used for real content (dates, legend amounts, hints),
+     not just decoration, so it cannot be a pale grey. */
+  --text: #0d1424;
+  --text-muted: #52607a;
+  --text-faint: #667085;
+  --text-inverse: #ffffff;
+
+  /* ── Brand ────────────────────────────────────────────────────────────── */
+  --primary: #4f46e5;
+  --primary-hover: #4338ca;
+  --primary-text: #4f46e5;
+  --primary-soft: #eef0fe;
+  --primary-ring: rgba(79, 70, 229, 0.16);
+  --brand-gradient: linear-gradient(135deg, #6366f1 0%, #8b5cf6 58%, #a855f7 100%);
+  --hero-gradient: linear-gradient(135deg, #312e81 0%, #4f46e5 52%, #7c3aed 100%);
+
+  /* Money in = balance rises. Red, following the Chinese market convention.
+     Money out = balance falls. Green. Swap these two pairs to use the
+     Western one — nothing else in this file encodes the direction. */
+  --income: #dc2626;
+  --income-soft: #fef3f3;
+  --income-border: #fadcdc;
+  --income-solid: #dc2626;
+  --income-solid-hover: #b91c1c;
+  /* #059669 (emerald-600) reads at 3.8:1 on white — fine for a chart, short
+     of AA for the ledger's amount text. emerald-700 clears it at 5.5:1. */
+  --expense: #047857;
+  --expense-soft: #ecfdf5;
+  --expense-border: #c8f1de;
+  --expense-solid: #047857;
+  --expense-solid-hover: #065f46;
+
+  --danger: #c2261b;
+  --danger-soft: #fef3f2;
+  --danger-solid: #c2261b;
+  --danger-solid-hover: #a81e14;
+
+  /* Category hues are injected per element as `--cat-hue` (see theme.ts).
+     Only the saturation/lightness live here, so the palette adapts to the
+     theme without the JS having to know which theme is active. */
+  --cat-saturation: 66%;
+  --cat-lightness: 45%;
+  /* `.debt-avatar` carries a letter, so it needs its own pair rather than the
+     solid `--cat-lightness` above. White on the solid hue bottoms out at
+     2.10:1 (hue ~70 — yellow-green is far brighter than blue at the same
+     lightness), which fails AA; it would need lightness ≤ 28.5% to pass, and
+     that is a near-black blob. A tinted fill with dark ink measures 4.88:1 or
+     better on every hue, and matches the soft tint the category pills use. */
+  --cat-avatar-fill: 90%;
+  --cat-avatar-ink: 26%;
+
+  /* ── Shape ────────────────────────────────────────────────────────────── */
+  /* Aliases over the length table, not values of their own: a radius is a
+     length, and scaling a card's padding without its corners is how a
+     shrunken card ends up looking swollen. */
+  --radius-xs: var(--px-6);
+  --radius-sm: var(--px-9);
+  --radius: var(--px-12);
+  --radius-lg: var(--px-16);
+  --radius-xl: var(--px-22);
+
+  /* ── Elevation ────────────────────────────────────────────────────────── */
+  --shadow-xs: 0 1px 2px rgba(13, 20, 36, 0.05);
+  --shadow-sm: 0 1px 2px rgba(13, 20, 36, 0.05), 0 1px 3px rgba(13, 20, 36, 0.05);
+  --shadow: 0 10px 28px -16px rgba(13, 20, 36, 0.24), 0 2px 6px -2px rgba(13, 20, 36, 0.06);
+  --shadow-lg: 0 28px 64px -24px rgba(13, 20, 36, 0.34), 0 10px 24px -14px rgba(13, 20, 36, 0.18);
+  --shadow-hero: 0 18px 38px -20px rgba(79, 70, 229, 0.7);
+
+  /* ── Type ─────────────────────────────────────────────────────────────── */
+  --font:
+    'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue',
+    Arial, sans-serif;
+  --mono: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
+
+  /* ── Motion ───────────────────────────────────────────────────────────── */
+  --ease: cubic-bezier(0.4, 0, 0.2, 1);
+  --dur: 140ms;
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+
+  --bg: #070a12;
+  --bg-accent: #0c101c;
+  --surface: #0f131e;
+  --surface-muted: #161b28;
+  --surface-sunken: #1e2433;
+
+  --border: #212938;
+  --border-strong: #333d52;
+
+  --text: #e8ecf6;
+  --text-muted: #98a3b9;
+  /* Same AA requirement as light: #6a7488 only reaches 3.9:1 on #0f131e. */
+  --text-faint: #7d8798;
+  --text-inverse: #ffffff;
+
+  --primary: #6366f1;
+  --primary-hover: #7c7ff5;
+  --primary-text: #a5b4fc;
+  --primary-soft: rgba(129, 140, 248, 0.13);
+  --primary-ring: rgba(129, 140, 248, 0.3);
+  --brand-gradient: linear-gradient(135deg, #4f46e5 0%, #7c3aed 58%, #9333ea 100%);
+  --hero-gradient: linear-gradient(135deg, #312e81 0%, #4f46e5 52%, #7c3aed 100%);
+
+  --income: #f87171;
+  --income-soft: rgba(248, 113, 113, 0.11);
+  --income-border: rgba(248, 113, 113, 0.26);
+  --income-solid: #b91c1c;
+  --income-solid-hover: #991b1b;
+  --expense: #34d399;
+  --expense-soft: rgba(52, 211, 153, 0.11);
+  --expense-border: rgba(52, 211, 153, 0.26);
+  --expense-solid: #047857;
+  --expense-solid-hover: #065f46;
+
+  --danger: #f87171;
+  --danger-soft: rgba(248, 113, 113, 0.12);
+  --danger-solid: #dc2626;
+  --danger-solid-hover: #b91c1c;
+
+  /* Lighter and slightly less saturated, so hues stay legible on near-black. */
+  --cat-saturation: 62%;
+  --cat-lightness: 62%;
+  /* Inverted for dark mode: a deep tint with light ink. Measured 5.94:1 at
+     worst across all 360 hues. */
+  --cat-avatar-fill: 22%;
+  --cat-avatar-ink: 82%;
+
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.5);
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.5), 0 1px 3px rgba(0, 0, 0, 0.4);
+  --shadow: 0 12px 30px -18px rgba(0, 0, 0, 0.9), 0 2px 6px -2px rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 32px 72px -28px rgba(0, 0, 0, 0.92), 0 12px 28px -16px rgba(0, 0, 0, 0.7);
+  --shadow-hero: 0 18px 40px -22px rgba(79, 70, 229, 0.85);
+}
+
+/* ── Base ───────────────────────────────────────────────────────────────── */
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: var(--fs-md);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  /* A desktop chrome, not a document: text is only selectable where it is
+     meaningful (inputs and the ledger note). */
+  user-select: none;
+}
+
+input,
+textarea {
+  user-select: text;
+}
+
+h1,
+h2,
+h3,
+p {
+  margin: 0;
+}
+
+button {
+  font: inherit;
+}
+
+/* One focus treatment for the whole app, and only for keyboard users. */
+:focus-visible {
+  outline: 2px solid var(--primary-text);
+  outline-offset: 2px;
+  border-radius: var(--radius-xs);
+}
+
+::selection {
+  background: var(--primary-ring);
+}
+
+/* ── Scrollbars ─────────────────────────────────────────────────────────── */
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-strong) transparent;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  border: 3px solid transparent;
+  border-radius: 999px;
+  background-clip: content-box;
+  background-color: var(--border-strong);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--text-faint);
+}
+
+/* ── Primitives ─────────────────────────────────────────────────────────── */
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-sm);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--px-7);
+  padding: var(--px-9) var(--px-15);
+  border: 1px solid transparent;
+  border-radius: var(--radius);
+  background: transparent;
+  font-weight: 600;
+  font-size: var(--fs-sm);
+  line-height: 1.2;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background var(--dur) var(--ease),
+    border-color var(--dur) var(--ease),
+    color var(--dur) var(--ease),
+    box-shadow var(--dur) var(--ease),
+    transform var(--dur) var(--ease);
+}
+
+.btn:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.btn-primary {
+  background: var(--primary);
+  color: var(--text-inverse);
+  box-shadow: 0 6px 16px -8px var(--primary);
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: var(--primary-hover);
+}
+
+.btn-ghost {
+  background: var(--surface);
+  border-color: var(--border);
+  color: var(--text-muted);
+}
+
+.btn-ghost:hover:not(:disabled) {
+  background: var(--surface-muted);
+  border-color: var(--border-strong);
+  color: var(--text);
+}
+
+/* Filled red, for the confirm button of a destructive action. `--danger`
+   alone is a *text* red and would be unreadable as a button fill in dark. */
+.btn-destructive {
+  background: var(--danger-solid);
+  color: #fff;
+  box-shadow: 0 6px 16px -8px var(--danger-solid);
+}
+
+.btn-destructive:hover:not(:disabled) {
+  background: var(--danger-solid-hover);
+}
+
+/* Filled money-direction buttons, used by the transaction dialog's submit so
+   the button states the direction in the same colour as the amount field. */
+.btn-income {
+  background: var(--income-solid);
+  color: #fff;
+  box-shadow: 0 6px 16px -8px var(--income-solid);
+}
+
+.btn-income:hover:not(:disabled) {
+  background: var(--income-solid-hover);
+}
+
+.btn-expense {
+  background: var(--expense-solid);
+  color: #fff;
+  box-shadow: 0 6px 16px -8px var(--expense-solid);
+}
+
+.btn-expense:hover:not(:disabled) {
+  background: var(--expense-solid-hover);
+}
+
+.input,
+.textarea {
+  width: 100%;
+  padding: var(--px-10) var(--px-13);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  font: inherit;
+  color: var(--text);
+  transition:
+    border-color var(--dur) var(--ease),
+    box-shadow var(--dur) var(--ease);
+}
+
+.input::placeholder,
+.textarea::placeholder {
+  color: var(--text-faint);
+}
+
+.input:hover:not(:disabled),
+.textarea:hover:not(:disabled) {
+  border-color: var(--border-strong);
+}
+
+.input:focus,
+.textarea:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px var(--primary-ring);
+}
+
+.input:disabled,
+.textarea:disabled {
+  background: var(--surface-muted);
+  color: var(--text-faint);
+  cursor: not-allowed;
+}
+
+.textarea {
+  min-height: var(--px-76);
+  resize: vertical;
+  line-height: 1.55;
+}
+
+.label {
+  display: block;
+  margin: var(--px-16) 0 var(--px-7);
+  font-size: var(--fs-2xs);
+  font-weight: 700;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.field-error {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--px-7);
+  margin-top: var(--px-12);
+  padding: var(--px-10) var(--px-12);
+  border: 1px solid var(--income-border);
+  border-radius: var(--radius);
+  background: var(--danger-soft);
+  color: var(--danger);
+  font-size: var(--fs-sm);
+  line-height: 1.45;
+}
+
+/* Sits inside a panel that supplies its own gutter, so it cancels the
+   margin-top the standalone form version needs. */
+.field-error.is-inset {
+  margin: var(--px-12) var(--px-20) 0;
+}
+
+.field-error svg {
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.muted {
+  color: var(--text-muted);
+}
+
+.faint {
+  color: var(--text-faint);
+}
+
+.numeric {
+  font-variant-numeric: tabular-nums;
+}
+
+.pill {
+  display: inline-block;
+  padding: var(--px-3) var(--px-9);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface-muted);
+  font-size: var(--fs-2xs);
+  font-weight: 600;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.pill-transfer {
+  border-color: transparent;
+  background: var(--primary-soft);
+  color: var(--primary-text);
+}
+
+.spinner {
+  width: var(--px-16);
+  height: var(--px-16);
+  flex-shrink: 0;
+  border: 2px solid var(--border-strong);
+  border-top-color: var(--primary);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+/* Spinners that sit on a filled (coloured) button need light strokes. */
+.btn-primary .spinner,
+.btn-income .spinner,
+.btn-expense .spinner,
+.btn-destructive .spinner {
+  border-color: rgba(255, 255, 255, 0.35);
+  border-top-color: #fff;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Placeholder rows, so a reload does not collapse the layout. */
+.skeleton {
+  border-radius: var(--radius-sm);
+  background: linear-gradient(
+    90deg,
+    var(--surface-muted) 0%,
+    var(--surface-sunken) 50%,
+    var(--surface-muted) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.4s var(--ease) infinite;
+}
+
+@keyframes shimmer {
+  to {
+    background-position: -200% 0;
+  }
+}
+
+.center-state {
+  height: 100%;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: var(--px-14);
+  color: var(--text-muted);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ==========================================================================
+   Auth screen
+   ========================================================================== */
+
+.auth-shell {
+  position: relative;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  padding: var(--px-24);
+  overflow: hidden;
+  background: var(--bg);
+}
+
+/* Two soft brand blooms behind the card. Purely decorative. */
+.auth-shell::before,
+.auth-shell::after {
+  content: '';
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(90px);
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.auth-shell::before {
+  width: var(--px-460);
+  height: var(--px-460);
+  top: calc(-1 * var(--px-160));
+  left: calc(-1 * var(--px-120));
+  background: radial-gradient(circle, rgba(99, 102, 241, 0.55), transparent 70%);
+}
+
+.auth-shell::after {
+  width: var(--px-520);
+  height: var(--px-520);
+  right: calc(-1 * var(--px-180));
+  bottom: calc(-1 * var(--px-200));
+  background: radial-gradient(circle, rgba(168, 85, 247, 0.45), transparent 70%);
+}
+
+:root[data-theme='dark'] .auth-shell::before,
+:root[data-theme='dark'] .auth-shell::after {
+  opacity: 0.32;
+}
+
+.auth-card {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: var(--px-408);
+  padding: var(--px-32);
+  box-shadow: var(--shadow-lg);
+}
+
+.auth-brand {
+  text-align: center;
+  margin-bottom: var(--px-26);
+}
+
+.auth-logo {
+  width: var(--px-56);
+  height: var(--px-56);
+  margin: 0 auto var(--px-16);
+  border-radius: var(--px-18);
+  background: var(--brand-gradient);
+  color: #fff;
+  display: grid;
+  place-items: center;
+  box-shadow: var(--shadow-hero);
+}
+
+.auth-title {
+  font-size: var(--fs-xl);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.auth-subtitle {
+  margin-top: var(--px-6);
+  color: var(--text-muted);
+  font-size: var(--fs-sm);
+}
+
+.segmented {
+  display: flex;
+  gap: var(--px-4);
+  padding: var(--px-4);
+  margin-bottom: var(--px-4);
+  border-radius: var(--radius);
+  background: var(--surface-muted);
+  border: 1px solid var(--border);
+}
+
+.segmented button {
+  flex: 1;
+  /* Flex so a segment can carry an icon before its label — the debt direction
+     control does, and inline layout would misalign the two. */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--px-7);
+  padding: var(--px-8) var(--px-10);
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  font-weight: 600;
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+  cursor: pointer;
+  transition:
+    background var(--dur) var(--ease),
+    color var(--dur) var(--ease),
+    box-shadow var(--dur) var(--ease);
+}
+
+.segmented button:hover {
+  color: var(--text);
+}
+
+.segmented button[aria-pressed='true'] {
+  background: var(--surface);
+  color: var(--primary-text);
+  box-shadow: var(--shadow-xs);
+}
+
+.notice {
+  margin-top: var(--px-14);
+  padding: var(--px-12) var(--px-14);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--primary-soft);
+  color: var(--primary-text);
+  font-size: var(--fs-sm);
+  line-height: 1.5;
+}
+
+/* The sign-in / sign-up switch under the form: centred, and a block so the
+   link's own padding does not shift it off the card's axis. */
+.auth-switch {
+  display: block;
+  margin: var(--px-16) auto 0;
+}
+
+/* ==========================================================================
+   App shell
+   ========================================================================== */
+
+.shell {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 44px;
+  flex-shrink: 0;
+  padding: 0 22px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  /* The OS title bar is gone, so this bar *is* the drag region. */
+  -webkit-app-region: drag;
+}
+
+/* A drag region swallows pointer input — every control inside it has to opt
+   back out, or it silently stops responding. */
+.topbar button,
+.topbar .user-chip,
+.window-controls {
+  -webkit-app-region: no-drag;
+}
+
+.topbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: -0.01em;
+}
+
+.topbar-mark {
+  width: 26px;
+  height: 26px;
+  border-radius: 8px;
+  background: var(--brand-gradient);
+  color: #fff;
+  display: grid;
+  place-items: center;
+  font-size: 13px;
+  box-shadow: var(--shadow-hero);
+}
+
+.topbar-version {
+  padding: 1px 6px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface-muted);
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--text-faint);
+}
+
+.topbar-spacer {
+  flex: 1;
+}
+
+/* Icon-only control, used by the theme switch and sign out in the top bar. */
+.icon-only {
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  background: var(--surface);
+  color: var(--text-muted);
+  cursor: pointer;
+  transition:
+    background var(--dur) var(--ease),
+    border-color var(--dur) var(--ease),
+    color var(--dur) var(--ease);
+}
+
+.icon-only:hover:not(:disabled) {
+  background: var(--surface-muted);
+  border-color: var(--border-strong);
+  color: var(--text);
+}
+
+.icon-only:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+/* Avatar only. The bar is a 44px icon row, so the address is not text here —
+   it lives in the chip's `title` and `aria-label` (see `accountLabel`). */
+.user-chip {
+  display: flex;
+  align-items: center;
+}
+
+.user-avatar {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--brand-gradient);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+/* ==========================================================================
+   Frameless window chrome
+   --------------------------------------------------------------------------
+   `frame: false` in the main process means there is no OS title bar to drag,
+   minimise, maximise or close. The bar above carries the drag region; the
+   cluster below is the caption. `WindowControls.tsx` owns the behaviour,
+   `src/main/index.ts` owns the window itself.
+   ========================================================================== */
+
+.window-controls {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  flex-shrink: 0;
+  /* Pulls the cluster out of the bar's 22px gutter and toward the corner,
+     the way a native caption sits — but not flush, so the close button's
+     hover fill keeps its rounded edge. */
+  margin-right: -12px;
+}
+
+.window-btn {
+  width: 36px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-xs);
+  background: transparent;
+  color: var(--text-muted);
+  /* Native caption buttons use the arrow, not the hand. */
+  cursor: default;
+  /* Belt and braces: the cluster already opts out of the drag region, but a
+     caption button that ends up draggable is a button that does nothing. */
+  -webkit-app-region: no-drag;
+  transition:
+    background var(--dur) var(--ease),
+    color var(--dur) var(--ease);
+}
+
+.window-btn:hover {
+  background: var(--surface-sunken);
+  color: var(--text);
+}
+
+.window-btn:active {
+  background: var(--border-strong);
+}
+
+/* The app's global focus ring is offset outwards, which the window edge would
+   clip — this is the one place it has to sit inside the button. */
+.window-btn:focus-visible {
+  outline-offset: -2px;
+}
+
+/* The system convention, and the only red fill in the app that is not a
+   warning about money or deletion. */
+.window-btn.is-close:hover {
+  background: var(--danger-solid);
+  color: var(--text-inverse);
+}
+
+.window-btn.is-close:active {
+  background: var(--danger-solid-hover);
+  color: var(--text-inverse);
+}
+
+/* The pre-auth screens have no top bar, so they get this bare handle instead:
+   a transparent strip across the top that is nothing but drag area and
+   caption. `fixed` so the centred auth card below it keeps its centring. */
+.titlebar-strip {
+  position: fixed;
+  inset: 0 0 auto 0;
+  z-index: 10;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 22px;
+  -webkit-app-region: drag;
+}
+
+/* macOS keeps its native traffic lights (`titleBarStyle: 'hiddenInset'`), so
+   the custom cluster hides and the bar is padded to clear them. The attribute
+   is set in `main.tsx` from the preload bridge; a plain browser is 'web'. */
+:root[data-platform='darwin'] .window-controls {
+  display: none;
+}
+
+:root[data-platform='darwin'] .topbar {
+  padding-left: 86px;
+}
+
+/* ==========================================================================
+   Workspace
+   ========================================================================== */
+
+.workspace {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: var(--px-286) minmax(0, 1fr);
+  gap: var(--px-18);
+  padding: var(--px-18) var(--px-22) var(--px-22);
+}
+
+.sidebar,
+.main-panel {
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--px-10);
+  flex-shrink: 0;
+  padding: var(--px-16) var(--px-18) var(--px-14);
+}
+
+.panel-head.is-divided {
+  border-bottom: 1px solid var(--border);
+}
+
+.panel-title {
+  font-size: var(--fs-md);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.title-with-count {
+  display: flex;
+  align-items: center;
+  gap: var(--px-8);
+}
+
+.count-badge {
+  min-width: var(--px-21);
+  padding: 1px var(--px-6);
+  border-radius: 999px;
+  background: var(--surface-muted);
+  border: 1px solid var(--border);
+  font-size: var(--fs-2xs);
+  font-weight: 700;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+.panel-body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 0 var(--px-10) var(--px-12);
+}
+
+.link-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--px-5);
+  padding: var(--px-5) var(--px-9);
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  font-weight: 600;
+  font-size: var(--fs-sm);
+  color: var(--primary-text);
+  cursor: pointer;
+  transition: background var(--dur) var(--ease);
+}
+
+.link-btn:hover {
+  background: var(--primary-soft);
+}
+
+/* ==========================================================================
+   Sidebar — wallets
+   ========================================================================== */
+
+.sidebar-total {
+  width: 100%;
+  display: block;
+  text-align: left;
+  margin-bottom: var(--px-8);
+  padding: var(--px-14) var(--px-15);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background:
+    linear-gradient(135deg, var(--primary-soft), transparent 70%),
+    var(--surface-muted);
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  transition:
+    border-color var(--dur) var(--ease),
+    box-shadow var(--dur) var(--ease);
+}
+
+.sidebar-total:hover {
+  border-color: var(--border-strong);
+}
+
+.sidebar-total[aria-pressed='true'] {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px var(--primary-ring);
+}
+
+.sidebar-total-label {
+  display: flex;
+  align-items: center;
+  gap: var(--px-6);
+  font-size: var(--fs-2xs);
+  font-weight: 700;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.sidebar-total-value {
+  display: block;
+  margin-top: var(--px-6);
+  font-size: var(--fs-xl);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+
+.wallet-item-wrap {
+  position: relative;
+  margin-bottom: var(--px-4);
+}
+
+.wallet-item {
+  display: flex;
+  align-items: center;
+  gap: var(--px-11);
+  width: 100%;
+  text-align: left;
+  padding: var(--px-11) var(--px-12);
+  border: 1px solid transparent;
+  border-radius: var(--radius);
+  background: transparent;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  transition:
+    background var(--dur) var(--ease),
+    border-color var(--dur) var(--ease);
+}
+
+.wallet-item:hover {
+  background: var(--surface-muted);
+}
+
+.wallet-item[aria-pressed='true'] {
+  background: var(--primary-soft);
+  border-color: var(--primary);
+}
+
+/* A left rail marks the selected wallet even when the tint is subtle. */
+.wallet-item[aria-pressed='true']::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: var(--px-3);
+  height: var(--px-26);
+  border-radius: 0 var(--px-3) var(--px-3) 0;
+  background: var(--primary);
+}
+
+.wallet-avatar {
+  width: var(--px-34);
+  height: var(--px-34);
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  border-radius: var(--px-11);
+  background: hsl(var(--cat-hue, 240) var(--cat-saturation) var(--cat-lightness) / 0.16);
+  color: hsl(var(--cat-hue, 240) var(--cat-saturation) calc(var(--cat-lightness) - 6%));
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+:root[data-theme='dark'] .wallet-avatar {
+  color: hsl(var(--cat-hue, 240) var(--cat-saturation) calc(var(--cat-lightness) + 6%));
+}
+
+.wallet-item-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.wallet-item-top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--px-8);
+}
+
+.wallet-item-name {
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.wallet-item-currency {
+  flex-shrink: 0;
+  font-family: var(--mono);
+  font-size: var(--fs-3xs);
+  color: var(--text-faint);
+}
+
+.wallet-item-balance {
+  display: block;
+  margin-top: var(--px-2);
+  font-size: var(--fs-md);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  font-variant-numeric: tabular-nums;
+}
+
+.wallet-item-actions {
+  position: absolute;
+  top: 50%;
+  right: var(--px-8);
+  transform: translateY(-50%);
+  display: flex;
+  gap: var(--px-4);
+  opacity: 0;
+  transition: opacity var(--dur) var(--ease);
+}
+
+.wallet-item-wrap:hover .wallet-item-actions,
+.wallet-item-wrap:focus-within .wallet-item-actions {
+  opacity: 1;
+}
+
+/* Keep the balance clear of the hover actions without reserving the space. */
+.wallet-item-wrap:hover .wallet-item,
+.wallet-item-wrap:focus-within .wallet-item {
+  padding-right: var(--px-74);
+}
+
+.icon-btn {
+  width: var(--px-28);
+  height: var(--px-28);
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xs);
+  background: var(--surface);
+  color: var(--text-muted);
+  cursor: pointer;
+  transition:
+    background var(--dur) var(--ease),
+    border-color var(--dur) var(--ease),
+    color var(--dur) var(--ease);
+}
+
+.icon-btn:hover {
+  background: var(--surface-muted);
+  border-color: var(--border-strong);
+  color: var(--text);
+}
+
+.icon-btn.is-danger:hover {
+  background: var(--danger);
+  border-color: var(--danger);
+  color: #fff;
+}
+
+/* ── Inline wallet form ─────────────────────────────────────────────────── */
+
+.wallet-form {
+  padding: var(--px-15);
+  margin-bottom: var(--px-10);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--surface-muted);
+}
+
+.form-title {
+  margin-bottom: var(--px-12);
+  font-size: var(--fs-sm);
+  font-weight: 700;
+}
+
+.form-hint {
+  margin-bottom: var(--px-10);
+  font-size: var(--fs-xs);
+  color: var(--text-faint);
+  line-height: 1.5;
+}
+
+.wallet-form .input + .input {
+  margin-top: var(--px-8);
+}
+
+.wallet-form .btn {
+  width: 100%;
+  margin-top: var(--px-12);
+}
+
+/* ==========================================================================
+   Chips
+   ========================================================================== */
+
+.chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--px-6);
+}
+
+.chip {
+  padding: var(--px-5) var(--px-11);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface);
+  font-size: var(--fs-xs);
+  font-weight: 500;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition:
+    background var(--dur) var(--ease),
+    border-color var(--dur) var(--ease),
+    color var(--dur) var(--ease);
+}
+
+.chip:hover {
+  border-color: var(--border-strong);
+  color: var(--text);
+  background: var(--surface-muted);
+}
+
+.chip[aria-pressed='true'] {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: #fff;
+  font-weight: 600;
+}
+
+.chip.is-quiet {
+  border-style: dashed;
+  color: var(--text-faint);
+}
+
+.chip-dot {
+  display: inline-block;
+  width: var(--px-7);
+  height: var(--px-7);
+  margin-right: var(--px-6);
+  border-radius: 50%;
+  background: hsl(var(--cat-hue, 240) var(--cat-saturation) var(--cat-lightness));
+  vertical-align: 1px;
+}
+
+.chip[aria-pressed='true'] .chip-dot {
+  background: currentColor;
+  opacity: 0.85;
+}
+
+/* Separates the direction chips from the category chips on the same row. */
+.chip-divider {
+  width: 1px;
+  align-self: stretch;
+  margin: 0 var(--px-3);
+  background: var(--border);
+}
+
+/* ==========================================================================
+   Main panel — summary
+   ========================================================================== */
+
+.summary-grid {
+  display: grid;
+  grid-template-columns: 1.35fr 1fr 1fr;
+  gap: var(--px-12);
+  flex-shrink: 0;
+  padding: var(--px-18) var(--px-20) 0;
+}
+
+.summary-tile {
+  position: relative;
+  overflow: hidden;
+  padding: var(--px-15) var(--px-16) var(--px-16);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+}
+
+.summary-tile-head {
+  display: flex;
+  align-items: center;
+  gap: var(--px-8);
+}
+
+.tile-icon {
+  width: var(--px-26);
+  height: var(--px-26);
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  border-radius: var(--px-8);
+  background: var(--surface-muted);
+  color: var(--text-muted);
+}
+
+.summary-label {
+  font-size: var(--fs-2xs);
+  font-weight: 700;
+  letter-spacing: 0.55px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.summary-value {
+  margin-top: var(--px-10);
+  font-size: var(--fs-2xl);
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  line-height: 1.15;
+  font-variant-numeric: tabular-nums;
+}
+
+.summary-sub {
+  margin-top: var(--px-5);
+  font-size: var(--fs-xs);
+  color: var(--text-faint);
+}
+
+/* The balance tile is the anchor of the screen: brand gradient, white type. */
+.summary-tile.is-hero {
+  border-color: transparent;
+  background: var(--hero-gradient);
+  box-shadow: var(--shadow-hero);
+}
+
+.summary-tile.is-hero::after {
+  content: '';
+  position: absolute;
+  width: var(--px-190);
+  height: var(--px-190);
+  top: calc(-1 * var(--px-80));
+  right: calc(-1 * var(--px-60));
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.12);
+  pointer-events: none;
+}
+
+.summary-tile.is-hero .summary-label,
+.summary-tile.is-hero .summary-sub {
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.summary-tile.is-hero .summary-value {
+  color: #fff;
+  font-size: var(--fs-4xl);
+}
+
+.summary-tile.is-hero .tile-icon {
+  background: rgba(255, 255, 255, 0.18);
+  color: #fff;
+}
+
+.summary-tile.is-income {
+  background: var(--income-soft);
+  border-color: var(--income-border);
+}
+
+.summary-tile.is-income .tile-icon {
+  background: transparent;
+  color: var(--income);
+}
+
+.summary-tile.is-income .summary-value {
+  color: var(--income);
+}
+
+.summary-tile.is-expense {
+  background: var(--expense-soft);
+  border-color: var(--expense-border);
+}
+
+.summary-tile.is-expense .tile-icon {
+  background: transparent;
+  color: var(--expense);
+}
+
+.summary-tile.is-expense .summary-value {
+  color: var(--expense);
+}
+
+.transfer-note {
+  display: flex;
+  align-items: center;
+  gap: var(--px-7);
+  flex-shrink: 0;
+  padding: var(--px-12) var(--px-20) 0;
+  font-size: var(--fs-xs);
+  color: var(--text-faint);
+}
+
+/* ==========================================================================
+   Main panel — category breakdown
+   ========================================================================== */
+
+.breakdown {
+  flex-shrink: 0;
+  padding: var(--px-18) var(--px-20) 0;
+}
+
+.breakdown-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--px-12);
+  margin-bottom: var(--px-10);
+}
+
+.breakdown-total {
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+/* One stacked bar beats six separate tracks: same information, a third of
+   the height, and the proportions are directly comparable. */
+.breakdown-track {
+  display: flex;
+  gap: var(--px-2);
+  height: var(--px-10);
+  border-radius: 999px;
+  overflow: hidden;
+  background: var(--surface-sunken);
+}
+
+.breakdown-segment {
+  height: 100%;
+  min-width: var(--px-4);
+  background: hsl(var(--cat-hue, 240) var(--cat-saturation) var(--cat-lightness));
+  transition: opacity var(--dur) var(--ease);
+}
+
+.breakdown-track:hover .breakdown-segment {
+  opacity: 0.45;
+}
+
+.breakdown-track .breakdown-segment:hover {
+  opacity: 1;
+}
+
+/* A grid rather than a wrapped flex row: with `flex-wrap`, a long category
+   name pushes into its neighbour and the items stop reading as a list. The
+   fixed track keeps every name and its amount in its own column. */
+.breakdown-legend {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(var(--px-188), 1fr));
+  gap: var(--px-8) var(--px-20);
+  margin-top: var(--px-12);
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: var(--px-7);
+  min-width: 0;
+  font-size: var(--fs-xs);
+}
+
+.legend-dot {
+  width: var(--px-8);
+  height: var(--px-8);
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: hsl(var(--cat-hue, 240) var(--cat-saturation) var(--cat-lightness));
+}
+
+.legend-name {
+  flex: 1 1 auto;
+  min-width: 0;
+  color: var(--text);
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.legend-value {
+  flex: 0 0 auto;
+  color: var(--text-faint);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* ==========================================================================
+   Main panel — toolbar & filters
+   ========================================================================== */
+
+.toolbar {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--px-12);
+  flex-shrink: 0;
+  padding: var(--px-20) var(--px-20) var(--px-14);
+}
+
+.toolbar-sub {
+  display: block;
+  margin-top: var(--px-3);
+  font-size: var(--fs-xs);
+  color: var(--text-faint);
+}
+
+.toolbar-actions {
+  display: flex;
+  gap: var(--px-8);
+  flex-shrink: 0;
+}
+
+.filter-bar {
+  display: flex;
+  flex-direction: column;
+  gap: var(--px-10);
+  flex-shrink: 0;
+  padding: 0 var(--px-20) var(--px-14);
+  border-bottom: 1px solid var(--border);
+}
+
+.filter-row {
+  display: flex;
+  align-items: center;
+  gap: var(--px-8);
+  flex-wrap: wrap;
+}
+
+.month-stepper {
+  display: flex;
+  align-items: center;
+  gap: var(--px-2);
+  padding: var(--px-2);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface-muted);
+}
+
+.month-btn {
+  width: var(--px-26);
+  height: var(--px-26);
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition:
+    background var(--dur) var(--ease),
+    color var(--dur) var(--ease);
+}
+
+.month-btn:hover:not(:disabled) {
+  background: var(--surface);
+  color: var(--primary-text);
+}
+
+.month-btn:disabled {
+  color: var(--text-faint);
+  opacity: 0.5;
+  cursor: default;
+}
+
+.month-label {
+  min-width: var(--px-92);
+  padding: 0 var(--px-4);
+  text-align: center;
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+/* Search input with a leading glyph that must not eat the click. */
+.search-field {
+  position: relative;
+  flex: 1;
+  min-width: var(--px-190);
+  max-width: var(--px-330);
+}
+
+.search-field svg {
+  position: absolute;
+  left: var(--px-11);
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-faint);
+  pointer-events: none;
+}
+
+.search-field .input {
+  padding-left: var(--px-34);
+  border-radius: 999px;
+}
+
+/* ==========================================================================
+   Main panel — ledger table
+   ========================================================================== */
+
+.table-wrap {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 0 var(--px-20) var(--px-16);
+}
+
+table.ledger {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+table.ledger thead th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  padding: var(--px-12) var(--px-12) var(--px-9);
+  text-align: left;
+  font-size: var(--fs-3xs);
+  font-weight: 700;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+}
+
+table.ledger tbody td {
+  padding: var(--px-11) var(--px-12);
+  border-bottom: 1px solid var(--border);
+  vertical-align: middle;
+}
+
+table.ledger tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+table.ledger tbody tr.ledger-row {
+  transition: background var(--dur) var(--ease);
+}
+
+table.ledger tbody tr.ledger-row:hover {
+  background: var(--surface-muted);
+}
+
+table.ledger tbody tr.ledger-row.is-editable {
+  cursor: pointer;
+}
+
+table.ledger tbody tr.ledger-row:focus-visible {
+  outline: 2px solid var(--primary-text);
+  outline-offset: -2px;
+}
+
+/* Column widths are declared on the header cells: this is an auto-layout
+   table, so a width on a body cell is only ever a hint while the header is
+   what fixes a column. The note column is deliberately the one that flexes.
+   Declared here rather than inline on the <th> so they scale with --density. */
+table.ledger thead th.col-date {
+  width: var(--px-104);
+}
+
+table.ledger thead th.col-wallet {
+  width: var(--px-148);
+}
+
+table.ledger thead th.col-category {
+  width: var(--px-156);
+}
+
+/* The header's amount aligns with the figures below it, not with its own
+   left edge. */
+table.ledger thead th.col-amount {
+  width: var(--px-168);
+  text-align: right;
+}
+
+td.col-date {
+  color: var(--text-faint);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+td.col-category {
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+/* A transfer leg names both wallets, so the cell carries more than the column
+   was sized for. Both ends truncate instead of the arrow drifting out of the
+   cell, and the pair is capped at the column so a long name cannot push the
+   note column narrower on one row only. */
+.wallet-pair {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--px-6);
+  max-width: 100%;
+  vertical-align: middle;
+}
+
+.wallet-pair .pill {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.wallet-pair-name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--text-muted);
+}
+
+.wallet-pair-arrow {
+  flex-shrink: 0;
+  color: var(--text-faint);
+}
+
+.cat-dot {
+  display: inline-block;
+  width: var(--px-8);
+  height: var(--px-8);
+  margin-right: var(--px-8);
+  border-radius: 50%;
+  background: hsl(var(--cat-hue, 240) var(--cat-saturation) var(--cat-lightness));
+  vertical-align: 1px;
+}
+
+td.col-note {
+  color: var(--text-muted);
+  max-width: 1px; /* lets the note truncate instead of pushing the amount */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+td.col-amount {
+  text-align: right;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  letter-spacing: -0.01em;
+}
+
+.amount-income {
+  color: var(--income);
+}
+
+.amount-expense {
+  color: var(--expense);
+}
+
+.amount-transfer {
+  color: var(--primary-text);
+}
+
+/* The delete affordance stays out of the way until the row is engaged. */
+td.col-actions {
+  width: var(--px-44);
+  padding-right: var(--px-4);
+}
+
+.row-delete {
+  width: var(--px-28);
+  height: var(--px-28);
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-xs);
+  background: transparent;
+  color: var(--text-faint);
+  cursor: pointer;
+  opacity: 0;
+  transition:
+    opacity var(--dur) var(--ease),
+    background var(--dur) var(--ease),
+    color var(--dur) var(--ease);
+}
+
+tr.ledger-row:hover .row-delete,
+tr.ledger-row:focus-within .row-delete,
+.row-delete:focus-visible {
+  opacity: 1;
+}
+
+.row-delete:hover {
+  background: var(--danger-soft);
+  color: var(--danger);
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--px-10);
+  padding: var(--px-52) var(--px-24);
+  text-align: center;
+  color: var(--text-faint);
+  font-size: var(--fs-sm);
+}
+
+/* The sidebar's version sits in a 10px-gutter column, not the full panel. */
+.empty-state.is-compact {
+  padding: var(--px-28) var(--px-16);
+}
+
+.empty-state svg {
+  color: var(--border-strong);
+}
+
+.empty-state strong {
+  color: var(--text-muted);
+  font-size: var(--fs-md);
+  font-weight: 600;
+}
+
+/* Loading placeholder rows — same rhythm as the real table. */
+.skeleton-row {
+  display: flex;
+  align-items: center;
+  gap: var(--px-14);
+  padding: var(--px-13) var(--px-12);
+  border-bottom: 1px solid var(--border);
+}
+
+.skeleton-row .skeleton:nth-child(1) {
+  width: var(--px-74);
+  height: var(--px-12);
+}
+
+.skeleton-row .skeleton:nth-child(2) {
+  width: var(--px-82);
+  height: var(--px-18);
+  border-radius: 999px;
+}
+
+.skeleton-row .skeleton:nth-child(3) {
+  flex: 1;
+  height: var(--px-12);
+}
+
+.skeleton-row .skeleton:nth-child(4) {
+  width: var(--px-90);
+  height: var(--px-14);
+}
+
+.load-more-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--px-16) 0 var(--px-4);
+}
+
+.ledger-footnote {
+  font-size: var(--fs-xs);
+  color: var(--text-faint);
+}
+
+/* ==========================================================================
+   Dialog
+   ========================================================================== */
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  display: grid;
+  place-items: center;
+  padding: var(--px-24);
+  background: rgba(9, 13, 24, 0.5);
+  backdrop-filter: blur(3px);
+  animation: overlay-in 160ms var(--ease);
+}
+
+@keyframes overlay-in {
+  from {
+    opacity: 0;
+  }
+}
+
+.dialog {
+  width: 100%;
+  max-width: var(--px-500);
+  max-height: 88vh;
+  overflow-y: auto;
+  /* No bottom padding: the sticky action bar below supplies its own, so it can
+     reach the very bottom edge of the scroll box. */
+  padding: var(--px-24) var(--px-24) 0;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  background: var(--surface);
+  box-shadow: var(--shadow-lg);
+  animation: dialog-in 200ms var(--ease);
+}
+
+@keyframes dialog-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.985);
+  }
+}
+
+.dialog-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--px-12);
+  margin-bottom: var(--px-14);
+}
+
+.dialog-title {
+  font-size: var(--fs-lg);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.dialog-close {
+  width: var(--px-32);
+  height: var(--px-32);
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition:
+    background var(--dur) var(--ease),
+    color var(--dur) var(--ease);
+}
+
+.dialog-close:hover:not(:disabled) {
+  background: var(--surface-muted);
+  color: var(--text);
+}
+
+/* Sticky, not static: the transaction form is taller than a 800px window, and
+   a primary action the user has to scroll to find is a primary action they
+   will miss. The negative margins let it span the dialog's full width. */
+.dialog-actions {
+  position: sticky;
+  bottom: 0;
+  z-index: 1;
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--px-10);
+  margin: var(--px-20) calc(-1 * var(--px-24)) 0;
+  padding: var(--px-16) var(--px-24) var(--px-20);
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+}
+
+/* The amount is the point of the form, so it gets the largest type. */
+.amount-row {
+  display: flex;
+  align-items: center;
+  gap: var(--px-10);
+  padding: var(--px-12) var(--px-15);
+  border: 1.5px solid var(--primary);
+  border-radius: var(--radius-lg);
+  background: var(--surface-muted);
+  transition: box-shadow var(--dur) var(--ease);
+}
+
+.amount-row:focus-within {
+  box-shadow: 0 0 0 3px var(--primary-ring);
+}
+
+.amount-row .currency {
+  flex-shrink: 0;
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  color: var(--primary-text);
+}
+
+.amount-row input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  outline: none;
+  background: transparent;
+  font-size: var(--fs-3xl);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+  color: var(--text);
+}
+
+.amount-row input::placeholder {
+  color: var(--text-faint);
+  font-weight: 600;
+}
+
+.field-hint {
+  margin-top: var(--px-7);
+  font-size: var(--fs-xs);
+  color: var(--text-faint);
+}
+
+.dialog-note {
+  margin-bottom: var(--px-4);
+  font-size: var(--fs-xs);
+  color: var(--text-faint);
+  line-height: 1.5;
+}
+
+/* A note that carries an icon. The icon is top-aligned against the first line
+   rather than centred, because these notes run to several lines. */
+.dialog-note.has-icon {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--px-7);
+}
+
+.dialog-note.has-icon svg {
+  flex-shrink: 0;
+  margin-top: var(--px-2);
+}
+
+/* ── Confirmation ───────────────────────────────────────────────────────── */
+
+.confirm-dialog {
+  max-width: var(--px-412);
+}
+
+.confirm-icon {
+  width: var(--px-42);
+  height: var(--px-42);
+  display: grid;
+  place-items: center;
+  margin-bottom: var(--px-14);
+  border-radius: 50%;
+  background: var(--danger-soft);
+  color: var(--danger);
+}
+
+.confirm-message {
+  margin-top: var(--px-8);
+  font-size: var(--fs-sm);
+  line-height: 1.55;
+  color: var(--text-muted);
+}
+
+/* ==========================================================================
+   Accounts Payable / Receivable
+   --------------------------------------------------------------------------
+   A debt is an obligation, not cash, so this section deliberately borrows as
+   little as possible from the ledger's visual language. It uses the same
+   tokens and the same tile/row rhythm, but never the income/expense colours:
+   an unpaid debt is not money in or out, and colouring it red or green would
+   say that it already is.
+   ========================================================================== */
+
+/* ── View switch ────────────────────────────────────────────────────────── */
+
+.tabs {
+  display: flex;
+  align-items: center;
+  gap: var(--px-4);
+  margin: var(--px-18) var(--px-20) 0;
+  padding: var(--px-3);
+  border-radius: var(--radius);
+  background: var(--surface-sunken);
+}
+
+.tab {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--px-7);
+  padding: var(--px-7) var(--px-14);
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text-muted);
+  font: inherit;
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background var(--dur) var(--ease),
+    color var(--dur) var(--ease);
+}
+
+.tab:hover {
+  color: var(--text);
+}
+
+.tab[aria-selected='true'] {
+  background: var(--surface);
+  color: var(--text);
+  box-shadow: var(--shadow-xs);
+}
+
+/* A count is informational, so it stays legible when the tab is inactive. */
+.tab-count {
+  padding: 1px var(--px-7);
+  border-radius: 999px;
+  background: var(--surface-muted);
+  font-size: var(--fs-2xs);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-muted);
+}
+
+.tab[aria-selected='true'] .tab-count {
+  background: var(--primary-soft);
+  color: var(--primary-text);
+}
+
+/* An overdue count is the one thing in the tab strip that is a call to
+   action, so it is the only one allowed to shout. */
+.tab-count.is-alert {
+  background: var(--danger-soft);
+  color: var(--danger);
+}
+
+/* ── Summary tiles ──────────────────────────────────────────────────────── */
+
+.debt-summary {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--px-14);
+  margin: var(--px-18) var(--px-20) 0;
+}
+
+/* The first currency group owns the section's top margin; later groups follow
+   their own heading instead. */
+.debt-summary.is-grouped {
+  margin-top: var(--px-8);
+}
+
+/* A currency heading inside the debt view, where several groups stack. */
+.debt-group-label {
+  margin: var(--px-18) var(--px-20) 0;
+}
+
+.summary-tile.is-receivable .tile-icon {
+  background: var(--primary-soft);
+  color: var(--primary-text);
+}
+
+.summary-tile.is-receivable .summary-value {
+  color: var(--primary-text);
+}
+
+.summary-tile.is-payable .tile-icon {
+  background: var(--surface-sunken);
+  color: var(--text-muted);
+}
+
+/* ── List ───────────────────────────────────────────────────────────────── */
+
+.debt-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--px-8);
+  margin: var(--px-14) var(--px-20) 0;
+  padding-bottom: var(--px-20);
+}
+
+.debt-row {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--px-13);
+  padding: var(--px-13) var(--px-15);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  transition:
+    border-color var(--dur) var(--ease),
+    box-shadow var(--dur) var(--ease);
+}
+
+.debt-row:hover {
+  border-color: var(--border-strong);
+  box-shadow: var(--shadow-xs);
+}
+
+/* Overdue is marked on the row's edge as well as in a badge: a list of ten
+   debts should show which ones are late before it is read line by line. */
+.debt-row.is-overdue {
+  border-left: 3px solid var(--danger);
+  padding-left: var(--px-13);
+}
+
+.debt-row.is-closed {
+  opacity: 0.62;
+}
+
+.debt-avatar {
+  width: var(--px-36);
+  height: var(--px-36);
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  /* Tinted, not solid: this is the one category-coloured element carrying text,
+     and white on the solid hue fails AA for roughly a third of the wheel.
+     `--cat-avatar-fill` / `--cat-avatar-ink` are per-theme — see :root. */
+  background: hsl(var(--cat-hue) var(--cat-saturation) var(--cat-avatar-fill));
+  color: hsl(var(--cat-hue) var(--cat-saturation) var(--cat-avatar-ink));
+  font-size: var(--fs-md);
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.debt-body {
+  min-width: 0;
+}
+
+.debt-top {
+  display: flex;
+  align-items: center;
+  gap: var(--px-8);
+  min-width: 0;
+}
+
+.debt-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: var(--fs-md);
+  font-weight: 650;
+  letter-spacing: -0.01em;
+}
+
+.debt-meta {
+  display: flex;
+  align-items: center;
+  gap: var(--px-6);
+  margin-top: var(--px-3);
+  font-size: var(--fs-xs);
+  color: var(--text-faint);
+}
+
+.debt-meta svg {
+  flex-shrink: 0;
+}
+
+.debt-note {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* The bar is a share of the *principal*, not of the outstanding amount, so a
+   debt that is half paid looks half done. */
+.debt-progress {
+  display: flex;
+  align-items: center;
+  gap: var(--px-9);
+  margin-top: var(--px-8);
+}
+
+.debt-track {
+  position: relative;
+  flex: 1;
+  height: var(--px-5);
+  max-width: var(--px-190);
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--surface-sunken);
+}
+
+.debt-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: var(--primary);
+  transition: width 240ms var(--ease);
+}
+
+.debt-row.is-overdue .debt-fill {
+  background: var(--danger);
+}
+
+.debt-row.is-settled .debt-fill {
+  background: var(--text-faint);
+}
+
+.debt-progress-label {
+  font-size: var(--fs-2xs);
+  font-variant-numeric: tabular-nums;
+  color: var(--text-faint);
+  white-space: nowrap;
+}
+
+.debt-figures {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--px-5);
+  text-align: right;
+}
+
+.debt-outstanding {
+  font-size: var(--fs-md);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+
+.debt-row.is-settled .debt-outstanding,
+.debt-row.is-closed .debt-outstanding {
+  color: var(--text-faint);
+  text-decoration: line-through;
+}
+
+.debt-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--px-6);
+}
+
+/* ── Status badges ──────────────────────────────────────────────────────── */
+
+.badge {
+  flex-shrink: 0;
+  padding: var(--px-2) var(--px-8);
+  border: 1px solid transparent;
+  border-radius: 999px;
+  font-size: var(--fs-3xs);
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.badge-overdue {
+  border-color: var(--income-border);
+  background: var(--danger-soft);
+  color: var(--danger);
+}
+
+.badge-due-soon {
+  border-color: var(--border-strong);
+  background: var(--surface-muted);
+  color: var(--text-muted);
+}
+
+.badge-settled,
+.badge-closed {
+  border-color: var(--border);
+  background: var(--surface-muted);
+  color: var(--text-faint);
+}
+
+/* Direction is stated, not implied by colour — see the note at the top. */
+.badge-direction {
+  border-color: var(--border);
+  background: var(--surface-muted);
+  color: var(--text-muted);
+  text-transform: none;
+  letter-spacing: 0;
+  font-weight: 600;
+}
+
+/* ── Settle progress in the dialog ──────────────────────────────────────── */
+
+.settle-figures {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--px-12);
+  margin: 0 0 var(--px-4);
+  padding: var(--px-11) var(--px-14);
+  border-radius: var(--radius-sm);
+  background: var(--surface-muted);
+  font-size: var(--fs-xs);
+}
+
+.settle-figures > div {
+  min-width: 0;
+}
+
+.settle-figures dt {
+  margin: 0;
+  color: var(--text-faint);
+}
+
+.settle-figures dd {
+  margin: var(--px-3) 0 0;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ==========================================================================
+   Small-window fallbacks
+   ========================================================================== */
+
+@media (max-width: 1080px) {
+  .summary-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .summary-tile.is-hero {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 900px) {
+  .workspace {
+    grid-template-columns: 1fr;
+    grid-template-rows: minmax(var(--px-180), 34%) minmax(0, 1fr);
+  }
+
+  .toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .toolbar-actions {
+    justify-content: flex-end;
+  }
+
+  /* The row's three columns stop fitting before the app's minimum width. */
+  .debt-row {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .debt-figures {
+    grid-column: 1 / -1;
+    align-items: flex-start;
+    text-align: left;
+  }
+}

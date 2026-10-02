@@ -1,0 +1,30 @@
+{
+  "name": "personal-wallet-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Sara Wallet — a cross-platform personal finance wallet (Expo + Electron) on a shared Supabase core",
+  "packageManager": "pnpm@9.12.3",
+  "engines": {
+    "node": ">=20.11.0",
+    "pnpm": ">=9.0.0"
+  },
+  "scripts": {
+    "mobile": "pnpm --filter @wallet/mobile start",
+    "mobile:android": "pnpm --filter @wallet/mobile android",
+    "mobile:ios": "pnpm --filter @wallet/mobile ios",
+    "desktop": "pnpm --filter @wallet/desktop dev",
+    "desktop:build": "pnpm --filter @wallet/desktop build",
+    "design:preview": "node scripts/build-design-preview.mjs",
+    "typecheck": "pnpm -r --parallel typecheck",
+    "test": "pnpm --filter @wallet/shared test",
+    "check:sql": "python scripts/check-sql.py",
+    "check:sql:live": "node scripts/check-sql-live.mjs",
+    "check:supabase": "node scripts/check-supabase.mjs",
+    "migrations:bundle": "node scripts/bundle-migrations.mjs",
+    "clean": "pnpm -r exec node -e \"require('fs').rmSync('node_modules',{recursive:true,force:true})\" && node -e \"require('fs').rmSync('node_modules',{recursive:true,force:true})\""
+  },
+  "devDependencies": {
+    "@electric-sql/pglite": "^0.5.8",
+    "typescript": "^5.6.3"
+  }
+}

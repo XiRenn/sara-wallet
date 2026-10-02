@@ -1,0 +1,25 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "types": ["node", "vite/client"],
+    "noEmit": true,
+    "baseUrl": ".",
+    "paths": {
+      "@renderer/*": ["src/renderer/src/*"],
+      "@wallet/shared": ["../../packages/shared/index.ts"]
+    }
+  },
+  "include": [
+    "electron.vite.config.ts",
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "../../packages/shared/index.ts",
+    "../../packages/shared/src/**/*.ts",
+    "../../packages/shared/src/**/*.tsx"
+  ],
+  "exclude": ["node_modules", "out"]
+}

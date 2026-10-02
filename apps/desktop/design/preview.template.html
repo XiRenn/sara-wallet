@@ -1,0 +1,1271 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sara Wallet — desktop redesign preview</title>
+    <!--
+      Generated file — do not edit. Edit `preview.template.html` or the real
+      stylesheet, then re-run `pnpm design:preview`.
+
+      The stylesheet below is a verbatim copy of
+      `apps/desktop/src/renderer/src/styles/global.css`, so what renders here
+      is what the Electron renderer paints. Category hues are substituted by
+      the generator using the same hash as `src/renderer/src/theme.ts`.
+    -->
+    <style>
+      /* INLINE:STYLES */
+    </style>
+    <style>
+      /* ── Preview chrome only. Never part of the app. ─────────────────── */
+      html,
+      body {
+        height: auto;
+        min-height: 100%;
+      }
+
+      body {
+        padding: 28px 28px 56px;
+        background:
+          radial-gradient(900px 400px at 15% -10%, var(--bg-accent), transparent 70%),
+          var(--bg);
+      }
+
+      .preview-bar {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        flex-wrap: wrap;
+        max-width: 1240px;
+        margin: 0 auto 20px;
+      }
+
+      .preview-title {
+        font-size: 15px;
+        font-weight: 700;
+        letter-spacing: -0.01em;
+      }
+
+      .preview-title span {
+        display: block;
+        margin-top: 2px;
+        font-size: 12px;
+        font-weight: 400;
+        color: var(--text-faint);
+      }
+
+      .preview-spacer {
+        flex: 1;
+      }
+
+      .preview-switch {
+        display: flex;
+        gap: 3px;
+        padding: 3px;
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        background: var(--surface-muted);
+      }
+
+      .preview-switch button {
+        padding: 6px 14px;
+        border: 0;
+        border-radius: 999px;
+        background: transparent;
+        font-size: 12.5px;
+        font-weight: 600;
+        color: var(--text-muted);
+        cursor: pointer;
+      }
+
+      .preview-switch button[aria-pressed='true'] {
+        background: var(--surface);
+        color: var(--text);
+        box-shadow: var(--shadow-xs);
+      }
+
+      .preview-frame {
+        position: relative;
+        max-width: 1240px;
+        height: 780px;
+        margin: 0 auto;
+        overflow: hidden;
+        border: 1px solid var(--border-strong);
+        border-radius: 18px;
+        background: var(--bg);
+        box-shadow: var(--shadow-lg);
+      }
+
+      /* The debts shell carries the summary tiles, a toolbar and five rows, so
+         it needs more room than the ledger shell. The 780px above is deliberate
+         for the ledger — it matches the app's default 800px window, which is
+         why the transaction dialog's action bar is sticky — so the override
+         lives on a modifier rather than on the shared class. */
+      .preview-frame.is-tall {
+        height: 1060px;
+      }
+
+      .preview-frame .shell {
+        height: 100%;
+      }
+
+      /* The app's overlay is `position: fixed`; inside a frame it has to be
+         scoped, or it would cover the whole preview page. */
+      .preview-frame .overlay {
+        position: absolute;
+      }
+
+      /* Same reason: the pre-auth drag handle is `fixed` in the app. */
+      .preview-panel .titlebar-strip {
+        position: absolute;
+      }
+
+      .preview-section {
+        max-width: 1240px;
+        margin: 40px auto 0;
+      }
+
+      .preview-section-title {
+        margin-bottom: 14px;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.7px;
+        text-transform: uppercase;
+        color: var(--text-faint);
+      }
+
+      .preview-panels {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        gap: 20px;
+      }
+
+      .preview-panel {
+        position: relative;
+        display: grid;
+        place-items: center;
+        min-height: 540px;
+        padding: 24px;
+        overflow: hidden;
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        background: var(--surface-muted);
+      }
+
+      /* Tall enough to show the whole transaction form without its internal
+         scroll, so the sticky action bar can be seen in place. */
+      .preview-panel.is-dialog {
+        min-height: 800px;
+      }
+
+      .preview-panel .overlay {
+        position: absolute;
+      }
+
+      .preview-panel.is-auth {
+        background: var(--bg);
+      }
+
+      @media (max-width: 900px) {
+        .preview-panels {
+          grid-template-columns: minmax(0, 1fr);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="preview-bar">
+      <div class="preview-title">
+        Sara Wallet — desktop redesign
+        <span>Static snapshot · sample data · same stylesheet the app ships</span>
+      </div>
+      <div class="preview-spacer"></div>
+      <div class="preview-switch" role="group" aria-label="Preview theme">
+        <button type="button" data-set-theme="light" aria-pressed="true">Light</button>
+        <button type="button" data-set-theme="dark" aria-pressed="false">Dark</button>
+      </div>
+    </div>
+
+    <!-- ══ The app shell ══════════════════════════════════════════════════ -->
+    <div class="preview-frame">
+      <div class="shell">
+        <header class="topbar">
+          <div class="topbar-brand">
+            <span class="topbar-mark" aria-hidden="true">S</span>
+            Sara Wallet
+          </div>
+          <span class="topbar-version">v1.0.0</span>
+
+          <div class="topbar-spacer"></div>
+
+          <button type="button" class="icon-only" aria-label="Switch to dark theme">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.5 14.6A8.6 8.6 0 0 1 9.4 3.5a8.6 8.6 0 1 0 11.1 11.1Z" /></svg>
+          </button>
+
+          <!-- Avatar only — the address is the chip's title/aria-label. -->
+          <span class="user-chip" role="img" title="Signed in as xirenn · relaxation.jk@gmail.com" aria-label="Signed in as xirenn · relaxation.jk@gmail.com">
+            <span class="user-avatar" aria-hidden="true">X</span>
+          </span>
+
+          <button type="button" class="icon-only" aria-label="Sign out" title="Sign out">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3" /><path d="m10 8-4 4 4 4" /><path d="M6 12h10" /></svg>
+          </button>
+
+          <!-- The frameless window's caption cluster — `WindowControls.tsx`.
+               Inert here; the preview is a static snapshot. -->
+          <div class="window-controls">
+            <button type="button" class="window-btn" aria-label="Minimize">
+              <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1" aria-hidden="true"><path d="M0 5.5h10" /></svg>
+            </button>
+            <button type="button" class="window-btn" aria-label="Maximize">
+              <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1" aria-hidden="true"><rect x="0.5" y="0.5" width="9" height="9" /></svg>
+            </button>
+            <button type="button" class="window-btn is-close" aria-label="Close">
+              <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1" aria-hidden="true"><path d="M0.5 0.5l9 9M9.5 0.5l-9 9" /></svg>
+            </button>
+          </div>
+        </header>
+
+        <div class="workspace">
+          <!-- ── Sidebar ─────────────────────────────────────────────────── -->
+          <aside class="card sidebar">
+            <div class="panel-head">
+              <div class="title-with-count">
+                <h2 class="panel-title">Wallets</h2>
+                <span class="count-badge">3</span>
+              </div>
+              <button type="button" class="link-btn">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5.5v13" /><path d="M5.5 12h13" /></svg>
+                New
+              </button>
+            </div>
+
+            <div class="panel-body">
+              <button type="button" class="sidebar-total" aria-pressed="false">
+                <span class="sidebar-total-label">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 8.5V7a2 2 0 0 0-2-2H5.5A2.5 2.5 0 0 0 3 7.5v9A2.5 2.5 0 0 0 5.5 19H18a2 2 0 0 0 2-2v-1.5" /><path d="M21 9.5h-4.25a2.25 2.25 0 0 0 0 4.5H21a1 1 0 0 0 1-1v-2.5a1 1 0 0 0-1-1Z" /></svg>
+                  All wallets
+                </span>
+                <span class="sidebar-total-value">MMK 947,500</span>
+              </button>
+
+              <div class="wallet-item-wrap">
+                <button type="button" class="wallet-item" aria-pressed="true">
+                  <span class="wallet-avatar" style="--cat-hue: {{hue:iWallet}}" aria-hidden="true">I</span>
+                  <span class="wallet-item-body">
+                    <span class="wallet-item-top">
+                      <span class="wallet-item-name">iWallet</span>
+                      <span class="wallet-item-currency">MMK</span>
+                    </span>
+                    <span class="wallet-item-balance">MMK 579,000</span>
+                  </span>
+                </button>
+                <div class="wallet-item-actions">
+                  <button type="button" class="icon-btn" aria-label="Rename iWallet">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19.5 8.5a2.12 2.12 0 0 0-3-3L5 17l-1 3Z" /><path d="m14.5 7.5 2 2" /></svg>
+                  </button>
+                  <button type="button" class="icon-btn is-danger" aria-label="Delete iWallet">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 7h15" /><path d="M10 11.5v5.5M14 11.5v5.5" /><path d="M6.5 7l.9 12.1a1 1 0 0 0 1 .9h7.2a1 1 0 0 0 1-.9L17.5 7" /><path d="M9.5 7V5.2a1 1 0 0 1 1-1h3a1 1 0 0 1 1 1V7" /></svg>
+                  </button>
+                </div>
+              </div>
+
+              <div class="wallet-item-wrap">
+                <button type="button" class="wallet-item" aria-pressed="false">
+                  <span class="wallet-avatar" style="--cat-hue: {{hue:KBZ Bank}}" aria-hidden="true">K</span>
+                  <span class="wallet-item-body">
+                    <span class="wallet-item-top">
+                      <span class="wallet-item-name">KBZ Bank</span>
+                      <span class="wallet-item-currency">MMK</span>
+                    </span>
+                    <span class="wallet-item-balance">MMK 240,000</span>
+                  </span>
+                </button>
+                <div class="wallet-item-actions">
+                  <button type="button" class="icon-btn" aria-label="Rename KBZ Bank">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19.5 8.5a2.12 2.12 0 0 0-3-3L5 17l-1 3Z" /><path d="m14.5 7.5 2 2" /></svg>
+                  </button>
+                  <button type="button" class="icon-btn is-danger" aria-label="Delete KBZ Bank">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 7h15" /><path d="M10 11.5v5.5M14 11.5v5.5" /><path d="M6.5 7l.9 12.1a1 1 0 0 0 1 .9h7.2a1 1 0 0 0 1-.9L17.5 7" /><path d="M9.5 7V5.2a1 1 0 0 1 1-1h3a1 1 0 0 1 1 1V7" /></svg>
+                  </button>
+                </div>
+              </div>
+
+              <div class="wallet-item-wrap">
+                <button type="button" class="wallet-item" aria-pressed="false">
+                  <span class="wallet-avatar" style="--cat-hue: {{hue:Cash}}" aria-hidden="true">C</span>
+                  <span class="wallet-item-body">
+                    <span class="wallet-item-top">
+                      <span class="wallet-item-name">Cash</span>
+                      <span class="wallet-item-currency">MMK</span>
+                    </span>
+                    <span class="wallet-item-balance">MMK 128,500</span>
+                  </span>
+                </button>
+                <div class="wallet-item-actions">
+                  <button type="button" class="icon-btn" aria-label="Rename Cash">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19.5 8.5a2.12 2.12 0 0 0-3-3L5 17l-1 3Z" /><path d="m14.5 7.5 2 2" /></svg>
+                  </button>
+                  <button type="button" class="icon-btn is-danger" aria-label="Delete Cash">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 7h15" /><path d="M10 11.5v5.5M14 11.5v5.5" /><path d="M6.5 7l.9 12.1a1 1 0 0 0 1 .9h7.2a1 1 0 0 0 1-.9L17.5 7" /><path d="M9.5 7V5.2a1 1 0 0 1 1-1h3a1 1 0 0 1 1 1V7" /></svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </aside>
+
+          <!-- ── Main panel ──────────────────────────────────────────────── -->
+          <section class="card main-panel">
+            <div class="summary-grid">
+              <div class="summary-tile is-hero">
+                <div class="summary-tile-head">
+                  <span class="tile-icon">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 8.5V7a2 2 0 0 0-2-2H5.5A2.5 2.5 0 0 0 3 7.5v9A2.5 2.5 0 0 0 5.5 19H18a2 2 0 0 0 2-2v-1.5" /><path d="M21 9.5h-4.25a2.25 2.25 0 0 0 0 4.5H21a1 1 0 0 0 1-1v-2.5a1 1 0 0 0-1-1Z" /></svg>
+                  </span>
+                  <span class="summary-label">iWallet balance</span>
+                </div>
+                <div class="summary-value">MMK 579,000</div>
+                <div class="summary-sub">MMK · this wallet only</div>
+              </div>
+
+              <div class="summary-tile is-income">
+                <div class="summary-tile-head">
+                  <span class="tile-icon">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7" /><path d="M8.5 7H17v8.5" /></svg>
+                  </span>
+                  <span class="summary-label">Money in</span>
+                </div>
+                <div class="summary-value">MMK 320,000</div>
+                <div class="summary-sub">Oct 2026</div>
+              </div>
+
+              <div class="summary-tile is-expense">
+                <div class="summary-tile-head">
+                  <span class="tile-icon">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 7l10 10" /><path d="M17 8.5V17H8.5" /></svg>
+                  </span>
+                  <span class="summary-label">Money out</span>
+                </div>
+                <div class="summary-value">MMK 40,500</div>
+                <div class="summary-sub">Oct 2026</div>
+              </div>
+            </div>
+
+            <p class="transfer-note">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 4 4 8l4 4" /><path d="M4 8h16" /><path d="m16 20 4-4-4-4" /><path d="M20 16H4" /></svg>
+              MMK 20,000 moved between your own wallets — not counted as income or spending.
+            </p>
+
+            <div class="tabs" role="tablist" aria-label="Main view">
+              <button type="button" role="tab" class="tab" aria-selected="true">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 8.5V7a2 2 0 0 0-2-2H5.5A2.5 2.5 0 0 0 3 7.5v9A2.5 2.5 0 0 0 5.5 19H18a2 2 0 0 0 2-2v-1.5" /><path d="M21 9.5h-4.25a2.25 2.25 0 0 0 0 4.5H21a1 1 0 0 0 1-1v-2.5a1 1 0 0 0-1-1Z" /></svg>
+                Ledger
+              </button>
+              <button type="button" role="tab" class="tab" aria-selected="false">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="15.5" cy="7.5" r="3.25" /><path d="M13.9 7.5h3.2M15.5 5.9v3.2" /><path d="M8.5 12.5H4.2a1.7 1.7 0 0 0-1.7 1.7v.9l3.3 3.3a2 2 0 0 0 1.4.6h4.3a2 2 0 0 0 1.5-.7l3.4-3.9" /><path d="m9.8 14.4 2.5 2.4a1.4 1.4 0 0 0 2-2l-2.6-2.5" /><path d="M6.2 12.5 4 15.4" /></svg>
+                Debts
+                <span class="tab-count is-alert">2 overdue</span>
+              </button>
+            </div>
+
+            <div class="breakdown">
+              <div class="breakdown-head">
+                <span class="summary-label">Where it went · Oct 2026</span>
+                <span class="breakdown-total">MMK 40,500 across 4 categories</span>
+              </div>
+
+              <div class="breakdown-track">
+                <div class="breakdown-segment" style="--cat-hue: {{hue:Bills}}; flex-grow: 21000" title="Bills · MMK 21,000 · 52%"></div>
+                <div class="breakdown-segment" style="--cat-hue: {{hue:Shopping}}; flex-grow: 12000" title="Shopping · MMK 12,000 · 30%"></div>
+                <div class="breakdown-segment" style="--cat-hue: {{hue:Transport}}; flex-grow: 6500" title="Transport · MMK 6,500 · 16%"></div>
+                <div class="breakdown-segment" style="--cat-hue: {{hue:Daddy}}; flex-grow: 1000" title="Daddy · MMK 1,000 · 2%"></div>
+              </div>
+
+              <div class="breakdown-legend">
+                <div class="legend-item">
+                  <span class="legend-dot" style="--cat-hue: {{hue:Bills}}" aria-hidden="true"></span>
+                  <span class="legend-name">Bills</span>
+                  <span class="legend-value">MMK 21,000 · 52%</span>
+                </div>
+                <div class="legend-item">
+                  <span class="legend-dot" style="--cat-hue: {{hue:Shopping}}" aria-hidden="true"></span>
+                  <span class="legend-name">Shopping</span>
+                  <span class="legend-value">MMK 12,000 · 30%</span>
+                </div>
+                <div class="legend-item">
+                  <span class="legend-dot" style="--cat-hue: {{hue:Transport}}" aria-hidden="true"></span>
+                  <span class="legend-name">Transport</span>
+                  <span class="legend-value">MMK 6,500 · 16%</span>
+                </div>
+                <div class="legend-item">
+                  <span class="legend-dot" style="--cat-hue: {{hue:Daddy}}" aria-hidden="true"></span>
+                  <span class="legend-name">Daddy</span>
+                  <span class="legend-value">MMK 1,000 · 2%</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="toolbar">
+              <div>
+                <h2 class="panel-title">Transactions</h2>
+                <span class="toolbar-sub">Only iWallet · Oct 2026 · 6 loaded</span>
+              </div>
+              <div class="toolbar-actions">
+                <button type="button" class="btn btn-ghost">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 12a8.5 8.5 0 0 1 14.6-5.9L21 8.7" /><path d="M21 3.5v5.2h-5.2" /><path d="M20.5 12a8.5 8.5 0 0 1-14.6 5.9L3 15.3" /><path d="M3 20.5v-5.2h5.2" /></svg>
+                  Refresh
+                </button>
+                <button type="button" class="btn btn-primary">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5.5v13" /><path d="M5.5 12h13" /></svg>
+                  Add transaction
+                </button>
+              </div>
+            </div>
+
+            <div class="filter-bar">
+              <div class="filter-row">
+                <div class="month-stepper">
+                  <button type="button" class="month-btn" aria-label="Previous month">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m14.5 6-6 6 6 6" /></svg>
+                  </button>
+                  <span class="month-label">Oct 2026</span>
+                  <button type="button" class="month-btn" aria-label="Next month" disabled>
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9.5 6 6 6-6 6" /></svg>
+                  </button>
+                </div>
+
+                <button type="button" class="chip" aria-pressed="false">All time</button>
+
+                <div class="search-field">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="6.75" /><path d="m20 20-3.7-3.7" /></svg>
+                  <input class="input" placeholder="Search notes and categories" aria-label="Search transactions" />
+                </div>
+              </div>
+
+              <div class="chip-row">
+                <button type="button" class="chip" aria-pressed="true">All</button>
+                <button type="button" class="chip" aria-pressed="false">Money in</button>
+                <button type="button" class="chip" aria-pressed="false">Money out</button>
+                <span class="chip-divider" aria-hidden="true"></span>
+                <button type="button" class="chip" aria-pressed="false"><span class="chip-dot" style="--cat-hue: {{hue:Bills}}" aria-hidden="true"></span>Bills</button>
+                <button type="button" class="chip" aria-pressed="false"><span class="chip-dot" style="--cat-hue: {{hue:Business}}" aria-hidden="true"></span>Business</button>
+                <button type="button" class="chip" aria-pressed="false"><span class="chip-dot" style="--cat-hue: {{hue:Debt collection}}" aria-hidden="true"></span>Debt collection</button>
+                <button type="button" class="chip" aria-pressed="false"><span class="chip-dot" style="--cat-hue: {{hue:Debt payment}}" aria-hidden="true"></span>Debt payment</button>
+                <button type="button" class="chip" aria-pressed="false"><span class="chip-dot" style="--cat-hue: {{hue:Education}}" aria-hidden="true"></span>Education</button>
+                <button type="button" class="chip" aria-pressed="true"><span class="chip-dot" style="--cat-hue: {{hue:Food}}" aria-hidden="true"></span>Food</button>
+                <button type="button" class="chip" aria-pressed="false"><span class="chip-dot" style="--cat-hue: {{hue:Freelance}}" aria-hidden="true"></span>Freelance</button>
+                <button type="button" class="chip" aria-pressed="false"><span class="chip-dot" style="--cat-hue: {{hue:Gift}}" aria-hidden="true"></span>Gift</button>
+                <button type="button" class="chip" aria-pressed="false"><span class="chip-dot" style="--cat-hue: {{hue:Health}}" aria-hidden="true"></span>Health</button>
+                <button type="button" class="chip" aria-pressed="false"><span class="chip-dot" style="--cat-hue: {{hue:Interest}}" aria-hidden="true"></span>Interest</button>
+                <button type="button" class="chip" aria-pressed="false"><span class="chip-dot" style="--cat-hue: {{hue:Other}}" aria-hidden="true"></span>Other</button>
+                <button type="button" class="chip" aria-pressed="false"><span class="chip-dot" style="--cat-hue: {{hue:Refund}}" aria-hidden="true"></span>Refund</button>
+                <button type="button" class="chip" aria-pressed="false"><span class="chip-dot" style="--cat-hue: {{hue:Rent}}" aria-hidden="true"></span>Rent</button>
+                <button type="button" class="chip" aria-pressed="false"><span class="chip-dot" style="--cat-hue: {{hue:Salary}}" aria-hidden="true"></span>Salary</button>
+                <button type="button" class="chip" aria-pressed="false"><span class="chip-dot" style="--cat-hue: {{hue:Shopping}}" aria-hidden="true"></span>Shopping</button>
+                <button type="button" class="chip" aria-pressed="false"><span class="chip-dot" style="--cat-hue: {{hue:Transfer}}" aria-hidden="true"></span>Transfer</button>
+                <button type="button" class="chip" aria-pressed="false"><span class="chip-dot" style="--cat-hue: {{hue:Transport}}" aria-hidden="true"></span>Transport</button>
+              </div>
+            </div>
+
+            <div class="table-wrap">
+              <table class="ledger">
+                <thead>
+                  <tr>
+                    <th class="col-date">Date</th>
+                    <th class="col-wallet">Wallet</th>
+                    <th class="col-category">Category</th>
+                    <th>Note</th>
+                    <th class="col-amount">Amount</th>
+                    <th class="col-actions"></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <!-- A transfer is two rows sharing a group id: the EXPENSE
+                       leg is the money leaving, the INCOME leg the money
+                       arriving. Both name both wallets, in from→to order,
+                       with whichever end the row actually moves kept as the
+                       pill. -->
+                  <tr class="ledger-row">
+                    <td class="col-date">10/01/2026</td>
+                    <td class="col-wallet">
+                      <span class="wallet-pair" title="From iWallet to Cash">
+                        <span class="pill">iWallet</span>
+                        <span class="wallet-pair-arrow" aria-hidden="true">→</span>
+                        <span class="wallet-pair-name">Cash</span>
+                      </span>
+                    </td>
+                    <td class="col-category"><span class="pill pill-transfer">⇄ Transfer</span></td>
+                    <td class="col-note">Move to Cash</td>
+                    <td class="col-amount amount-transfer">−MMK 20,000</td>
+                    <td class="col-actions">
+                      <button type="button" class="row-delete" aria-label="Delete transfer">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 7h15" /><path d="M10 11.5v5.5M14 11.5v5.5" /><path d="M6.5 7l.9 12.1a1 1 0 0 0 1 .9h7.2a1 1 0 0 0 1-.9L17.5 7" /><path d="M9.5 7V5.2a1 1 0 0 1 1-1h3a1 1 0 0 1 1 1V7" /></svg>
+                      </button>
+                    </td>
+                  </tr>
+                  <tr class="ledger-row">
+                    <td class="col-date">10/01/2026</td>
+                    <td class="col-wallet">
+                      <span class="wallet-pair" title="From iWallet to Cash">
+                        <span class="wallet-pair-name">iWallet</span>
+                        <span class="wallet-pair-arrow" aria-hidden="true">→</span>
+                        <span class="pill">Cash</span>
+                      </span>
+                    </td>
+                    <td class="col-category"><span class="pill pill-transfer">⇄ Transfer</span></td>
+                    <td class="col-note">Move to Cash</td>
+                    <td class="col-amount amount-transfer">+MMK 20,000</td>
+                    <td class="col-actions">
+                      <button type="button" class="row-delete" aria-label="Delete transfer">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 7h15" /><path d="M10 11.5v5.5M14 11.5v5.5" /><path d="M6.5 7l.9 12.1a1 1 0 0 0 1 .9h7.2a1 1 0 0 0 1-.9L17.5 7" /><path d="M9.5 7V5.2a1 1 0 0 1 1-1h3a1 1 0 0 1 1 1V7" /></svg>
+                      </button>
+                    </td>
+                  </tr>
+                  <tr class="ledger-row is-editable">
+                    <td class="col-date">10/01/2026</td>
+                    <td class="col-wallet"><span class="pill">iWallet</span></td>
+                    <td class="col-category"><span class="cat-dot" style="--cat-hue: {{hue:Daddy}}" aria-hidden="true"></span>Daddy</td>
+                    <td class="col-note">ဆပ်ချင်း 5000 ကျပ်</td>
+                    <td class="col-amount amount-expense">−MMK 1,000</td>
+                    <td class="col-actions">
+                      <button type="button" class="row-delete" aria-label="Delete Daddy transaction">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 7h15" /><path d="M10 11.5v5.5M14 11.5v5.5" /><path d="M6.5 7l.9 12.1a1 1 0 0 0 1 .9h7.2a1 1 0 0 0 1-.9L17.5 7" /><path d="M9.5 7V5.2a1 1 0 0 1 1-1h3a1 1 0 0 1 1 1V7" /></svg>
+                      </button>
+                    </td>
+                  </tr>
+                  <tr class="ledger-row is-editable">
+                    <td class="col-date">10/02/2026</td>
+                    <td class="col-wallet"><span class="pill">KBZ Bank</span></td>
+                    <td class="col-category"><span class="cat-dot" style="--cat-hue: {{hue:Salary}}" aria-hidden="true"></span>Salary</td>
+                    <td class="col-note">October salary</td>
+                    <td class="col-amount amount-income">+MMK 320,000</td>
+                    <td class="col-actions">
+                      <button type="button" class="row-delete" aria-label="Delete Salary transaction">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 7h15" /><path d="M10 11.5v5.5M14 11.5v5.5" /><path d="M6.5 7l.9 12.1a1 1 0 0 0 1 .9h7.2a1 1 0 0 0 1-.9L17.5 7" /><path d="M9.5 7V5.2a1 1 0 0 1 1-1h3a1 1 0 0 1 1 1V7" /></svg>
+                      </button>
+                    </td>
+                  </tr>
+                  <tr class="ledger-row is-editable">
+                    <td class="col-date">10/03/2026</td>
+                    <td class="col-wallet"><span class="pill">Cash</span></td>
+                    <td class="col-category"><span class="cat-dot" style="--cat-hue: {{hue:Transport}}" aria-hidden="true"></span>Transport</td>
+                    <td class="col-note">Taxi to Zay Cho</td>
+                    <td class="col-amount amount-expense">−MMK 6,500</td>
+                    <td class="col-actions">
+                      <button type="button" class="row-delete" aria-label="Delete Transport transaction">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 7h15" /><path d="M10 11.5v5.5M14 11.5v5.5" /><path d="M6.5 7l.9 12.1a1 1 0 0 0 1 .9h7.2a1 1 0 0 0 1-.9L17.5 7" /><path d="M9.5 7V5.2a1 1 0 0 1 1-1h3a1 1 0 0 1 1 1V7" /></svg>
+                      </button>
+                    </td>
+                  </tr>
+                  <tr class="ledger-row is-editable">
+                    <td class="col-date">10/05/2026</td>
+                    <td class="col-wallet"><span class="pill">iWallet</span></td>
+                    <td class="col-category"><span class="cat-dot" style="--cat-hue: {{hue:Bills}}" aria-hidden="true"></span>Bills</td>
+                    <td class="col-note">Electricity — October</td>
+                    <td class="col-amount amount-expense">−MMK 21,000</td>
+                    <td class="col-actions">
+                      <button type="button" class="row-delete" aria-label="Delete Bills transaction">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 7h15" /><path d="M10 11.5v5.5M14 11.5v5.5" /><path d="M6.5 7l.9 12.1a1 1 0 0 0 1 .9h7.2a1 1 0 0 0 1-.9L17.5 7" /><path d="M9.5 7V5.2a1 1 0 0 1 1-1h3a1 1 0 0 1 1 1V7" /></svg>
+                      </button>
+                    </td>
+                  </tr>
+                  <tr class="ledger-row is-editable">
+                    <td class="col-date">10/06/2026</td>
+                    <td class="col-wallet"><span class="pill">Cash</span></td>
+                    <td class="col-category"><span class="cat-dot" style="--cat-hue: {{hue:Shopping}}" aria-hidden="true"></span>Shopping</td>
+                    <td class="col-note">Groceries at Ocean</td>
+                    <td class="col-amount amount-expense">−MMK 12,000</td>
+                    <td class="col-actions">
+                      <button type="button" class="row-delete" aria-label="Delete Shopping transaction">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 7h15" /><path d="M10 11.5v5.5M14 11.5v5.5" /><path d="M6.5 7l.9 12.1a1 1 0 0 0 1 .9h7.2a1 1 0 0 0 1-.9L17.5 7" /><path d="M9.5 7V5.2a1 1 0 0 1 1-1h3a1 1 0 0 1 1 1V7" /></svg>
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <div class="load-more-row">
+                <span class="ledger-footnote">That is the whole ledger — 6 transactions.</span>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ Debts — Accounts Payable / Receivable ═════════════════════════ -->
+    <section class="preview-section">
+      <h2 class="preview-section-title">Debts — accounts payable &amp; receivable</h2>
+
+      <div class="preview-frame is-tall">
+        <div class="shell">
+        <header class="topbar">
+          <div class="topbar-brand">
+            <span class="topbar-mark" aria-hidden="true">S</span>
+            Sara Wallet
+          </div>
+          <span class="topbar-version">v1.0.0</span>
+
+          <div class="topbar-spacer"></div>
+
+          <button type="button" class="icon-only" aria-label="Switch to dark theme">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.5 14.6A8.6 8.6 0 0 1 9.4 3.5a8.6 8.6 0 1 0 11.1 11.1Z" /></svg>
+          </button>
+
+          <!-- Avatar only — the address is the chip's title/aria-label. -->
+          <span class="user-chip" role="img" title="Signed in as xirenn · relaxation.jk@gmail.com" aria-label="Signed in as xirenn · relaxation.jk@gmail.com">
+            <span class="user-avatar" aria-hidden="true">X</span>
+          </span>
+
+          <button type="button" class="icon-only" aria-label="Sign out" title="Sign out">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3" /><path d="m10 8-4 4 4 4" /><path d="M6 12h10" /></svg>
+          </button>
+
+          <!-- The frameless window's caption cluster — `WindowControls.tsx`.
+               Inert here; the preview is a static snapshot. -->
+          <div class="window-controls">
+            <button type="button" class="window-btn" aria-label="Minimize">
+              <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1" aria-hidden="true"><path d="M0 5.5h10" /></svg>
+            </button>
+            <button type="button" class="window-btn" aria-label="Maximize">
+              <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1" aria-hidden="true"><rect x="0.5" y="0.5" width="9" height="9" /></svg>
+            </button>
+            <button type="button" class="window-btn is-close" aria-label="Close">
+              <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1" aria-hidden="true"><path d="M0.5 0.5l9 9M9.5 0.5l-9 9" /></svg>
+            </button>
+          </div>
+        </header>
+
+          <div class="workspace">
+          <!-- ── Sidebar ─────────────────────────────────────────────────── -->
+          <aside class="card sidebar">
+            <div class="panel-head">
+              <div class="title-with-count">
+                <h2 class="panel-title">Wallets</h2>
+                <span class="count-badge">3</span>
+              </div>
+              <button type="button" class="link-btn">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5.5v13" /><path d="M5.5 12h13" /></svg>
+                New
+              </button>
+            </div>
+
+            <div class="panel-body">
+              <button type="button" class="sidebar-total" aria-pressed="false">
+                <span class="sidebar-total-label">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 8.5V7a2 2 0 0 0-2-2H5.5A2.5 2.5 0 0 0 3 7.5v9A2.5 2.5 0 0 0 5.5 19H18a2 2 0 0 0 2-2v-1.5" /><path d="M21 9.5h-4.25a2.25 2.25 0 0 0 0 4.5H21a1 1 0 0 0 1-1v-2.5a1 1 0 0 0-1-1Z" /></svg>
+                  All wallets
+                </span>
+                <span class="sidebar-total-value">MMK 947,500</span>
+              </button>
+
+              <div class="wallet-item-wrap">
+                <button type="button" class="wallet-item" aria-pressed="true">
+                  <span class="wallet-avatar" style="--cat-hue: {{hue:iWallet}}" aria-hidden="true">I</span>
+                  <span class="wallet-item-body">
+                    <span class="wallet-item-top">
+                      <span class="wallet-item-name">iWallet</span>
+                      <span class="wallet-item-currency">MMK</span>
+                    </span>
+                    <span class="wallet-item-balance">MMK 579,000</span>
+                  </span>
+                </button>
+                <div class="wallet-item-actions">
+                  <button type="button" class="icon-btn" aria-label="Rename iWallet">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19.5 8.5a2.12 2.12 0 0 0-3-3L5 17l-1 3Z" /><path d="m14.5 7.5 2 2" /></svg>
+                  </button>
+                  <button type="button" class="icon-btn is-danger" aria-label="Delete iWallet">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 7h15" /><path d="M10 11.5v5.5M14 11.5v5.5" /><path d="M6.5 7l.9 12.1a1 1 0 0 0 1 .9h7.2a1 1 0 0 0 1-.9L17.5 7" /><path d="M9.5 7V5.2a1 1 0 0 1 1-1h3a1 1 0 0 1 1 1V7" /></svg>
+                  </button>
+                </div>
+              </div>
+
+              <div class="wallet-item-wrap">
+                <button type="button" class="wallet-item" aria-pressed="false">
+                  <span class="wallet-avatar" style="--cat-hue: {{hue:KBZ Bank}}" aria-hidden="true">K</span>
+                  <span class="wallet-item-body">
+                    <span class="wallet-item-top">
+                      <span class="wallet-item-name">KBZ Bank</span>
+                      <span class="wallet-item-currency">MMK</span>
+                    </span>
+                    <span class="wallet-item-balance">MMK 240,000</span>
+                  </span>
+                </button>
+                <div class="wallet-item-actions">
+                  <button type="button" class="icon-btn" aria-label="Rename KBZ Bank">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19.5 8.5a2.12 2.12 0 0 0-3-3L5 17l-1 3Z" /><path d="m14.5 7.5 2 2" /></svg>
+                  </button>
+                  <button type="button" class="icon-btn is-danger" aria-label="Delete KBZ Bank">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 7h15" /><path d="M10 11.5v5.5M14 11.5v5.5" /><path d="M6.5 7l.9 12.1a1 1 0 0 0 1 .9h7.2a1 1 0 0 0 1-.9L17.5 7" /><path d="M9.5 7V5.2a1 1 0 0 1 1-1h3a1 1 0 0 1 1 1V7" /></svg>
+                  </button>
+                </div>
+              </div>
+
+              <div class="wallet-item-wrap">
+                <button type="button" class="wallet-item" aria-pressed="false">
+                  <span class="wallet-avatar" style="--cat-hue: {{hue:Cash}}" aria-hidden="true">C</span>
+                  <span class="wallet-item-body">
+                    <span class="wallet-item-top">
+                      <span class="wallet-item-name">Cash</span>
+                      <span class="wallet-item-currency">MMK</span>
+                    </span>
+                    <span class="wallet-item-balance">MMK 128,500</span>
+                  </span>
+                </button>
+                <div class="wallet-item-actions">
+                  <button type="button" class="icon-btn" aria-label="Rename Cash">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19.5 8.5a2.12 2.12 0 0 0-3-3L5 17l-1 3Z" /><path d="m14.5 7.5 2 2" /></svg>
+                  </button>
+                  <button type="button" class="icon-btn is-danger" aria-label="Delete Cash">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 7h15" /><path d="M10 11.5v5.5M14 11.5v5.5" /><path d="M6.5 7l.9 12.1a1 1 0 0 0 1 .9h7.2a1 1 0 0 0 1-.9L17.5 7" /><path d="M9.5 7V5.2a1 1 0 0 1 1-1h3a1 1 0 0 1 1 1V7" /></svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </aside>
+
+            <section class="card main-panel">
+              <div class="summary-grid">
+                <div class="summary-tile is-hero">
+                  <div class="summary-tile-head">
+                    <span class="tile-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 8.5V7a2 2 0 0 0-2-2H5.5A2.5 2.5 0 0 0 3 7.5v9A2.5 2.5 0 0 0 5.5 19H18a2 2 0 0 0 2-2v-1.5" /><path d="M21 9.5h-4.25a2.25 2.25 0 0 0 0 4.5H21a1 1 0 0 0 1-1v-2.5a1 1 0 0 0-1-1Z" /></svg></span>
+                    <span class="summary-label">Total balance</span>
+                  </div>
+                  <div class="summary-value">MMK 947,500</div>
+                  <div class="summary-sub">Across 3 wallets</div>
+                </div>
+
+                <div class="summary-tile is-income">
+                  <div class="summary-tile-head">
+                    <span class="tile-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7" /><path d="M8.5 7H17v8.5" /></svg></span>
+                    <span class="summary-label">Money in</span>
+                  </div>
+                  <div class="summary-value">MMK 320,000</div>
+                  <div class="summary-sub">Oct 2026</div>
+                </div>
+
+                <div class="summary-tile is-expense">
+                  <div class="summary-tile-head">
+                    <span class="tile-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 7l10 10" /><path d="M17 8.5V17H8.5" /></svg></span>
+                    <span class="summary-label">Money out</span>
+                  </div>
+                  <div class="summary-value">MMK 40,500</div>
+                  <div class="summary-sub">Oct 2026</div>
+                </div>
+              </div>
+
+              <div class="tabs" role="tablist" aria-label="Main view">
+                <button type="button" role="tab" class="tab" aria-selected="false">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 8.5V7a2 2 0 0 0-2-2H5.5A2.5 2.5 0 0 0 3 7.5v9A2.5 2.5 0 0 0 5.5 19H18a2 2 0 0 0 2-2v-1.5" /><path d="M21 9.5h-4.25a2.25 2.25 0 0 0 0 4.5H21a1 1 0 0 0 1-1v-2.5a1 1 0 0 0-1-1Z" /></svg>
+                  Ledger
+                </button>
+                <button type="button" role="tab" class="tab" aria-selected="true">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="15.5" cy="7.5" r="3.25" /><path d="M13.9 7.5h3.2M15.5 5.9v3.2" /><path d="M8.5 12.5H4.2a1.7 1.7 0 0 0-1.7 1.7v.9l3.3 3.3a2 2 0 0 0 1.4.6h4.3a2 2 0 0 0 1.5-.7l3.4-3.9" /><path d="m9.8 14.4 2.5 2.4a1.4 1.4 0 0 0 2-2l-2.6-2.5" /><path d="M6.2 12.5 4 15.4" /></svg>
+                  Debts
+                  <span class="tab-count is-alert">2 overdue</span>
+                </button>
+              </div>
+
+              <div class="debt-summary">
+                <div class="summary-tile is-receivable">
+                  <div class="summary-tile-head">
+                    <span class="tile-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="15.5" cy="7.5" r="3.25" /><path d="M13.9 7.5h3.2M15.5 5.9v3.2" /><path d="M8.5 12.5H4.2a1.7 1.7 0 0 0-1.7 1.7v.9l3.3 3.3a2 2 0 0 0 1.4.6h4.3a2 2 0 0 0 1.5-.7l3.4-3.9" /><path d="m9.8 14.4 2.5 2.4a1.4 1.4 0 0 0 2-2l-2.6-2.5" /><path d="M6.2 12.5 4 15.4" /></svg></span>
+                    <span class="summary-label">Owed to you</span>
+                  </div>
+                  <div class="summary-value">MMK 42,000</div>
+                  <div class="summary-sub">MMK 30,000 overdue</div>
+                </div>
+
+                <div class="summary-tile is-payable">
+                  <div class="summary-tile-head">
+                    <span class="tile-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5.5 3.5h13v16.2l-2.2-1.5-2.2 1.5-2.1-1.5-2.2 1.5-2.2-1.5-2.1 1.5V3.5Z" /><path d="M9 8.5h6M9 12.5h4" /></svg></span>
+                    <span class="summary-label">You owe</span>
+                  </div>
+                  <div class="summary-value">MMK 20,000</div>
+                  <div class="summary-sub">Nothing overdue</div>
+                </div>
+              </div>
+
+              <div class="toolbar">
+                <div>
+                  <h2 class="panel-title">Debts</h2>
+                  <span class="toolbar-sub">5 records · 2 overdue</span>
+                </div>
+                <div class="toolbar-actions">
+                  <button type="button" class="btn btn-primary">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5.5v13" /><path d="M5.5 12h13" /></svg>
+                    Record a debt
+                  </button>
+                </div>
+              </div>
+
+              <div class="debt-list">
+              <div class="debt-row is-overdue">
+                <span class="debt-avatar" style="--cat-hue: {{hue:Ko Aung}}" aria-hidden="true">K</span>
+
+                <div class="debt-body">
+                  <div class="debt-top">
+                    <span class="debt-name">Ko Aung</span>
+                    <span class="badge badge-direction">Owed to you</span>
+                    <span class="badge badge-overdue">Overdue</span>
+                  </div>
+
+                  <div class="debt-meta">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.25" /><path d="M12 7.4V12l3 1.8" /></svg>
+                    <span>10 days overdue · 4 Oct</span>
+                  </div>
+
+                  <div class="debt-progress">
+                    <span class="debt-track"><span class="debt-fill" style="width: 40%"></span></span>
+                    <span class="debt-progress-label">MMK 20,000 of MMK 50,000 settled</span>
+                  </div>
+                </div>
+
+                <div class="debt-figures">
+                  <span class="debt-outstanding">MMK 30,000</span>
+                  <div class="debt-actions">
+                    <button type="button" class="btn btn-primary"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.6 4.6 4.6L19 7.4" /></svg> Settle</button>
+                    <button type="button" class="icon-btn" aria-label="Edit debt"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19.5 8.5a2.12 2.12 0 0 0-3-3L5 17l-1 3Z" /><path d="m14.5 7.5 2 2" /></svg></button>
+                    <button type="button" class="icon-btn" aria-label="Close debt"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11" /></svg></button>
+                    <button type="button" class="icon-btn is-danger" aria-label="Delete debt"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 7h15" /><path d="M10 11.5v5.5M14 11.5v5.5" /><path d="M6.5 7l.9 12.1a1 1 0 0 0 1 .9h7.2a1 1 0 0 0 1-.9L17.5 7" /><path d="M9.5 7V5.2a1 1 0 0 1 1-1h3a1 1 0 0 1 1 1V7" /></svg></button>
+                  </div>
+                </div>
+              </div>
+              <div class="debt-row ">
+                <span class="debt-avatar" style="--cat-hue: {{hue:Daw Hla}}" aria-hidden="true">D</span>
+
+                <div class="debt-body">
+                  <div class="debt-top">
+                    <span class="debt-name">Daw Hla (rice shop)</span>
+                    <span class="badge badge-direction">You owe</span>
+                    <span class="badge badge-due-soon">Due soon</span>
+                  </div>
+
+                  <div class="debt-meta">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.25" /><path d="M12 7.4V12l3 1.8" /></svg>
+                    <span>Due in 6 days · 20 Oct</span>
+                  </div>
+
+                  <div class="debt-progress">
+                    <span class="debt-track"><span class="debt-fill" style="width: 33%"></span></span>
+                    <span class="debt-progress-label">MMK 10,000 of MMK 30,000 settled</span>
+                  </div>
+                </div>
+
+                <div class="debt-figures">
+                  <span class="debt-outstanding">MMK 20,000</span>
+                  <div class="debt-actions">
+                    <button type="button" class="btn btn-primary"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.6 4.6 4.6L19 7.4" /></svg> Settle</button>
+                    <button type="button" class="icon-btn" aria-label="Edit debt"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19.5 8.5a2.12 2.12 0 0 0-3-3L5 17l-1 3Z" /><path d="m14.5 7.5 2 2" /></svg></button>
+                    <button type="button" class="icon-btn" aria-label="Close debt"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11" /></svg></button>
+                    <button type="button" class="icon-btn is-danger" aria-label="Delete debt"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 7h15" /><path d="M10 11.5v5.5M14 11.5v5.5" /><path d="M6.5 7l.9 12.1a1 1 0 0 0 1 .9h7.2a1 1 0 0 0 1-.9L17.5 7" /><path d="M9.5 7V5.2a1 1 0 0 1 1-1h3a1 1 0 0 1 1 1V7" /></svg></button>
+                  </div>
+                </div>
+              </div>
+              <div class="debt-row ">
+                <span class="debt-avatar" style="--cat-hue: {{hue:Su Su}}" aria-hidden="true">S</span>
+
+                <div class="debt-body">
+                  <div class="debt-top">
+                    <span class="debt-name">Su Su</span>
+                    <span class="badge badge-direction">Owed to you</span>
+                    
+                  </div>
+
+                  <div class="debt-meta">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.25" /><path d="M12 7.4V12l3 1.8" /></svg>
+                    <span>No due date</span>
+                  </div>
+
+                  <div class="debt-progress">
+                    <span class="debt-track"><span class="debt-fill" style="width: 0%"></span></span>
+                    <span class="debt-progress-label">MMK 12,000 total</span>
+                  </div>
+                </div>
+
+                <div class="debt-figures">
+                  <span class="debt-outstanding">MMK 12,000</span>
+                  <div class="debt-actions">
+                    <button type="button" class="btn btn-primary"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.6 4.6 4.6L19 7.4" /></svg> Settle</button>
+                    <button type="button" class="icon-btn" aria-label="Edit debt"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19.5 8.5a2.12 2.12 0 0 0-3-3L5 17l-1 3Z" /><path d="m14.5 7.5 2 2" /></svg></button>
+                    <button type="button" class="icon-btn" aria-label="Close debt"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11" /></svg></button>
+                    <button type="button" class="icon-btn is-danger" aria-label="Delete debt"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 7h15" /><path d="M10 11.5v5.5M14 11.5v5.5" /><path d="M6.5 7l.9 12.1a1 1 0 0 0 1 .9h7.2a1 1 0 0 0 1-.9L17.5 7" /><path d="M9.5 7V5.2a1 1 0 0 1 1-1h3a1 1 0 0 1 1 1V7" /></svg></button>
+                  </div>
+                </div>
+              </div>
+              <div class="debt-row is-settled">
+                <span class="debt-avatar" style="--cat-hue: {{hue:Nok}}" aria-hidden="true">N</span>
+
+                <div class="debt-body">
+                  <div class="debt-top">
+                    <span class="debt-name">Nok</span>
+                    <span class="badge badge-direction">Owed to you</span>
+                    <span class="badge badge-settled">Settled</span>
+                  </div>
+
+                  <div class="debt-meta">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4.5" y="10" width="15" height="10.5" rx="2.2" /><path d="M8 10V7.6a4 4 0 0 1 8 0V10" /></svg>
+                    <span>Paid in full</span>
+                  </div>
+                </div>
+
+                <div class="debt-figures">
+                  <span class="debt-outstanding">THB 0</span>
+                  <div class="debt-actions">
+                    <button type="button" class="btn btn-ghost">Reopen</button>
+                    <button type="button" class="icon-btn" aria-label="Edit debt"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19.5 8.5a2.12 2.12 0 0 0-3-3L5 17l-1 3Z" /><path d="m14.5 7.5 2 2" /></svg></button>
+                    <button type="button" class="icon-btn is-danger" aria-label="Delete debt"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 7h15" /><path d="M10 11.5v5.5M14 11.5v5.5" /><path d="M6.5 7l.9 12.1a1 1 0 0 0 1 .9h7.2a1 1 0 0 0 1-.9L17.5 7" /><path d="M9.5 7V5.2a1 1 0 0 1 1-1h3a1 1 0 0 1 1 1V7" /></svg></button>
+                  </div>
+                </div>
+              </div>
+              <div class="debt-row is-closed">
+                <span class="debt-avatar" style="--cat-hue: {{hue:Shop}}" aria-hidden="true">S</span>
+
+                <div class="debt-body">
+                  <div class="debt-top">
+                    <span class="debt-name">Shop</span>
+                    <span class="badge badge-direction">You owe</span>
+                    <span class="badge badge-closed">Closed</span>
+                  </div>
+
+                  <div class="debt-meta">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4.5" y="10" width="15" height="10.5" rx="2.2" /><path d="M8 10V7.6a4 4 0 0 1 8 0V10" /></svg>
+                    <span>Closed — no longer counted</span>
+                  </div>
+                </div>
+
+                <div class="debt-figures">
+                  <span class="debt-outstanding">MMK 0</span>
+                  <div class="debt-actions">
+                    <button type="button" class="btn btn-ghost">Reopen</button>
+                    <button type="button" class="icon-btn" aria-label="Edit debt"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19.5 8.5a2.12 2.12 0 0 0-3-3L5 17l-1 3Z" /><path d="m14.5 7.5 2 2" /></svg></button>
+                    <button type="button" class="icon-btn is-danger" aria-label="Delete debt"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 7h15" /><path d="M10 11.5v5.5M14 11.5v5.5" /><path d="M6.5 7l.9 12.1a1 1 0 0 0 1 .9h7.2a1 1 0 0 0 1-.9L17.5 7" /><path d="M9.5 7V5.2a1 1 0 0 1 1-1h3a1 1 0 0 1 1 1V7" /></svg></button>
+                  </div>
+                </div>
+              </div>
+              </div>
+            </section>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ Overlays ══════════════════════════════════════════════════════ -->
+    <section class="preview-section">
+      <h2 class="preview-section-title">Dialogs</h2>
+      <div class="preview-panels">
+        <div class="preview-panel is-dialog">
+          <div class="overlay">
+            <form class="dialog" role="dialog" aria-modal="true">
+              <div class="dialog-head">
+                <h2 class="dialog-title">New transaction</h2>
+                <button type="button" class="dialog-close" aria-label="Close">
+                  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11" /></svg>
+                </button>
+              </div>
+
+              <div class="segmented">
+                <button type="button" aria-pressed="true">Money out</button>
+                <button type="button" aria-pressed="false">Money in</button>
+                <button type="button" aria-pressed="false">Transfer</button>
+              </div>
+
+              <label class="label" for="p-amount">Amount</label>
+              <div class="amount-row" style="border-color: var(--expense)">
+                <span class="currency" style="color: var(--expense)">MMK</span>
+                <input id="p-amount" value="21,000" inputmode="decimal" />
+              </div>
+              <p class="field-hint">Current balance MMK 579,000</p>
+
+              <span class="label">Wallet</span>
+              <div class="chip-row">
+                <button type="button" class="chip" aria-pressed="true">iWallet</button>
+                <button type="button" class="chip" aria-pressed="false">KBZ Bank</button>
+                <button type="button" class="chip" aria-pressed="false">Cash</button>
+              </div>
+
+              <span class="label">Category</span>
+              <div class="chip-row">
+                <button type="button" class="chip" aria-pressed="false"><span class="chip-dot" style="--cat-hue: {{hue:Food}}" aria-hidden="true"></span>Food</button>
+                <button type="button" class="chip" aria-pressed="false"><span class="chip-dot" style="--cat-hue: {{hue:Transport}}" aria-hidden="true"></span>Transport</button>
+                <button type="button" class="chip" aria-pressed="true"><span class="chip-dot" style="--cat-hue: {{hue:Bills}}" aria-hidden="true"></span>Bills</button>
+                <button type="button" class="chip" aria-pressed="false"><span class="chip-dot" style="--cat-hue: {{hue:Shopping}}" aria-hidden="true"></span>Shopping</button>
+                <button type="button" class="chip" aria-pressed="false"><span class="chip-dot" style="--cat-hue: {{hue:Health}}" aria-hidden="true"></span>Health</button>
+                <button type="button" class="chip" aria-pressed="false"><span class="chip-dot" style="--cat-hue: {{hue:Education}}" aria-hidden="true"></span>Education</button>
+                <button type="button" class="chip" aria-pressed="false"><span class="chip-dot" style="--cat-hue: {{hue:Rent}}" aria-hidden="true"></span>Rent</button>
+                <button type="button" class="chip" aria-pressed="false"><span class="chip-dot" style="--cat-hue: {{hue:Other}}" aria-hidden="true"></span>Other</button>
+              </div>
+              <input class="input" value="Bills" style="margin-top: 8px" />
+
+              <span class="label">Date</span>
+              <div class="chip-row">
+                <button type="button" class="chip" aria-pressed="true">Today</button>
+                <button type="button" class="chip" aria-pressed="false">Yesterday</button>
+                <button type="button" class="chip" aria-pressed="false">Pick a date</button>
+              </div>
+
+              <label class="label" for="p-note">Note (optional)</label>
+              <textarea id="p-note" class="textarea" placeholder="What was this for?"></textarea>
+
+              <div class="dialog-actions">
+                <button type="button" class="btn btn-ghost">Cancel</button>
+                <button type="button" class="btn btn-expense">Save expense</button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <div class="preview-panel is-dialog">
+          <div class="overlay">
+            <form class="dialog" role="dialog" aria-modal="true">
+              <div class="dialog-head">
+                <h2 class="dialog-title">Record a debt</h2>
+                <button type="button" class="dialog-close" aria-label="Close"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11" /></svg></button>
+              </div>
+
+              <div class="segmented">
+                <button type="button" aria-pressed="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="15.5" cy="7.5" r="3.25" /><path d="M13.9 7.5h3.2M15.5 5.9v3.2" /><path d="M8.5 12.5H4.2a1.7 1.7 0 0 0-1.7 1.7v.9l3.3 3.3a2 2 0 0 0 1.4.6h4.3a2 2 0 0 0 1.5-.7l3.4-3.9" /><path d="m9.8 14.4 2.5 2.4a1.4 1.4 0 0 0 2-2l-2.6-2.5" /><path d="M6.2 12.5 4 15.4" /></svg></svg>Owed to you</button>
+                <button type="button" aria-pressed="false"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5.5 3.5h13v16.2l-2.2-1.5-2.2 1.5-2.1-1.5-2.2 1.5-2.2-1.5-2.1 1.5V3.5Z" /><path d="M9 8.5h6M9 12.5h4" /></svg></svg>You owe</button>
+              </div>
+
+              <label class="label" for="p-debt-who">Who owes you</label>
+              <input class="input" id="p-debt-who" value="Ko Aung" maxlength="80" />
+
+              <label class="label" for="p-debt-amount">Amount</label>
+              <div class="amount-row">
+                <span class="currency">MMK</span>
+                <input id="p-debt-amount" value="50,000" inputmode="decimal" />
+              </div>
+
+              <span class="label">Currency</span>
+              <div class="chip-row">
+                <button type="button" class="chip" aria-pressed="true">MMK</button>
+                <button type="button" class="chip" aria-pressed="false">THB</button>
+                <button type="button" class="chip" aria-pressed="false">USD</button>
+              </div>
+
+              <label class="label" for="p-debt-issued">Recorded on</label>
+              <input class="input" id="p-debt-issued" value="2026-10-01" maxlength="10" />
+
+              <label class="label" for="p-debt-due">Due on</label>
+              <input class="input" id="p-debt-due" value="2026-10-20" maxlength="10" />
+              <p class="field-hint">
+                Leave blank if there is no agreed date — an undated debt is never
+                counted as overdue.
+              </p>
+
+              <label class="label" for="p-debt-note">Note</label>
+              <textarea class="textarea" id="p-debt-note" rows="2">Rice for the shop</textarea>
+
+              <div class="dialog-actions">
+                <p class="dialog-note" style="margin-right: auto; margin-bottom: 0">
+                  Recording a debt moves no money. Your wallets change when you settle it.
+                </p>
+                <button type="button" class="btn btn-ghost">Cancel</button>
+                <button type="button" class="btn btn-primary">Record debt</button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <div class="preview-panel is-dialog">
+          <div class="overlay">
+            <form class="dialog" role="dialog" aria-modal="true">
+              <div class="dialog-head">
+                <h2 class="dialog-title">Collect from Ko Aung</h2>
+                <button type="button" class="dialog-close" aria-label="Close"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11" /></svg></button>
+              </div>
+
+              <dl class="settle-figures">
+                <div>
+                  <dt>Still outstanding</dt>
+                  <dd>MMK 30,000</dd>
+                </div>
+                <div>
+                  <dt>Original amount</dt>
+                  <dd>MMK 50,000</dd>
+                </div>
+                <div>
+                  <dt>After this</dt>
+                  <dd>MMK 0</dd>
+                </div>
+              </dl>
+
+              <label class="label" for="p-settle-amount">Amount</label>
+              <div class="amount-row">
+                <span class="currency">MMK</span>
+                <input id="p-settle-amount" value="30,000" inputmode="decimal" />
+              </div>
+              <div class="chip-row">
+                <button type="button" class="chip" aria-pressed="true">Settle in full</button>
+                <button type="button" class="chip" aria-pressed="false">Half</button>
+              </div>
+
+              <span class="label">Wallet</span>
+              <div class="chip-row">
+                <button type="button" class="chip" aria-pressed="true">Cash · MMK 128,500</button>
+                <button type="button" class="chip" aria-pressed="false">iWallet · MMK 579,000</button>
+              </div>
+
+              <label class="label" for="p-settle-date">Date</label>
+              <input class="input" id="p-settle-date" value="2026-10-14" maxlength="10" />
+
+              <label class="label" for="p-settle-note">Note</label>
+              <input class="input" id="p-settle-note" placeholder="Optional" maxlength="500" />
+
+              <p class="dialog-note has-icon" style="margin-top: 14px">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7" /><path d="M8.5 7H17v8.5" /></svg>
+                <span>
+                  This writes a real income of MMK 30,000 under “Debt collection” to Cash,
+                  and moves that wallet's balance.
+                </span>
+              </p>
+
+              <div class="dialog-actions">
+                <button type="button" class="btn btn-ghost">Cancel</button>
+                <button type="button" class="btn btn-income"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.6 4.6 4.6L19 7.4" /></svg>Record collection</button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <div class="preview-panel is-dialog">
+          <div class="overlay">
+            <form class="dialog" role="dialog" aria-modal="true">
+              <div class="dialog-head">
+                <h2 class="dialog-title">Edit debt</h2>
+                <button type="button" class="dialog-close" aria-label="Close"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11" /></svg></button>
+              </div>
+
+              <p class="dialog-note has-icon">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.3 4 2.6 17.4A2 2 0 0 0 4.3 20.4h15.4a2 2 0 0 0 1.7-3L13.7 4a2 2 0 0 0-3.4 0Z" /><path d="M12 9.5v4" /><path d="M12 16.8h.01" /></svg></svg>
+                <span>
+                  MMK 20,000 has already been settled against this, so the direction, amount
+                  and currency are fixed. Delete it and record a new one to change those.
+                </span>
+              </p>
+
+              <label class="label" for="p-edit-who">Who owes you</label>
+              <input class="input" id="p-edit-who" value="Ko Aung" maxlength="80" />
+
+              <label class="label" for="p-edit-amount">Amount</label>
+              <div class="amount-row">
+                <span class="currency">MMK</span>
+                <input id="p-edit-amount" value="50,000" inputmode="decimal" disabled />
+              </div>
+
+              <label class="label" for="p-edit-due">Due on</label>
+              <input class="input" id="p-edit-due" value="2026-10-20" maxlength="10" />
+
+              <div class="dialog-actions">
+                <p class="dialog-note" style="margin-right: auto; margin-bottom: 0">
+                  Editing a debt never moves money.
+                </p>
+                <button type="button" class="btn btn-ghost">Cancel</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+              </div>
+            </form>
+          </div>
+        </div>
+        <div class="preview-panel is-dialog">
+          <div class="overlay">
+            <div class="dialog confirm-dialog" role="alertdialog" aria-modal="true">
+              <span class="confirm-icon" aria-hidden="true">
+                <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.3 4 2.6 17.4A2 2 0 0 0 4.3 20.4h15.4a2 2 0 0 0 1.7-3L13.7 4a2 2 0 0 0-3.4 0Z" /><path d="M12 9.5v4" /><path d="M12 16.8h.01" /></svg>
+              </span>
+              <h2 class="dialog-title">Delete “iWallet”?</h2>
+              <p class="confirm-message">
+                Every transaction inside it will be deleted too, and its MMK balance will go
+                with it. This cannot be undone.
+              </p>
+              <div class="dialog-actions">
+                <button type="button" class="btn btn-ghost">Cancel</button>
+                <button type="button" class="btn btn-destructive">Delete wallet</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ Sign-in ═══════════════════════════════════════════════════════ -->
+    <section class="preview-section">
+      <h2 class="preview-section-title">Sign in</h2>
+      <div class="preview-panel is-auth" style="min-height: 560px">
+        <div class="auth-shell" style="height: 520px; width: 100%">
+          <!-- The pre-auth drag handle — `FramelessHandle` in App.tsx. There
+               is no top bar before sign-in, and a frameless window with no
+               drag region cannot be moved. -->
+          <div class="titlebar-strip">
+            <div class="window-controls">
+              <button type="button" class="window-btn" aria-label="Minimize">
+                <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1" aria-hidden="true"><path d="M0 5.5h10" /></svg>
+              </button>
+              <button type="button" class="window-btn" aria-label="Maximize">
+                <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1" aria-hidden="true"><rect x="0.5" y="0.5" width="9" height="9" /></svg>
+              </button>
+              <button type="button" class="window-btn is-close" aria-label="Close">
+                <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1" aria-hidden="true"><path d="M0.5 0.5l9 9M9.5 0.5l-9 9" /></svg>
+              </button>
+            </div>
+          </div>
+
+          <div class="card auth-card">
+            <div class="auth-brand">
+              <div class="auth-logo" aria-hidden="true">S</div>
+              <h1 class="auth-title">Sara Wallet</h1>
+              <p class="auth-subtitle">Sign in to see your balances.</p>
+            </div>
+
+            <div class="segmented">
+              <button type="button" aria-pressed="true">Sign in</button>
+              <button type="button" aria-pressed="false">Register</button>
+            </div>
+
+            <label class="label" for="p-email">Email</label>
+            <input id="p-email" class="input" type="email" placeholder="you@example.com" />
+
+            <label class="label" for="p-password">Password</label>
+            <input id="p-password" class="input" type="password" placeholder="••••••••" />
+
+            <button type="button" class="btn btn-primary" style="width: 100%; margin-top: 24px; min-height: 44px">
+              Sign in
+            </button>
+
+            <button type="button" class="link-btn" style="display: block; margin: 16px auto 0">
+              Don't have an account? Register
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <script>
+      (function () {
+        var root = document.documentElement;
+        var buttons = Array.prototype.slice.call(
+          document.querySelectorAll('[data-set-theme]'),
+        );
+
+        function apply(mode) {
+          root.dataset.theme = mode;
+          buttons.forEach(function (button) {
+            button.setAttribute('aria-pressed', String(button.dataset.setTheme === mode));
+          });
+        }
+
+        buttons.forEach(function (button) {
+          button.addEventListener('click', function () {
+            apply(button.dataset.setTheme);
+          });
+        });
+
+        apply(
+          window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+            ? 'dark'
+            : 'light',
+        );
+      })();
+    </script>
+  </body>
+</html>

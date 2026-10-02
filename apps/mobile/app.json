@@ -1,0 +1,38 @@
+{
+  "expo": {
+    "name": "Sara Wallet",
+    "slug": "sara-wallet",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "scheme": "sarawallet",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "icon": "./assets/icon.png",
+    "assetBundlePatterns": ["**/*"],
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#2563EB"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.sarawallet.app"
+    },
+    "android": {
+      "package": "com.sarawallet.app",
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#2563EB"
+      },
+      "edgeToEdgeEnabled": true
+    },
+    "web": {
+      "bundler": "metro",
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [],
+    "extra": {
+      "//": "Runtime values are read from EXPO_PUBLIC_* env vars — see apps/mobile/.env.example"
+    }
+  }
+}

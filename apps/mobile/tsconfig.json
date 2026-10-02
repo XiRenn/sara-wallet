@@ -1,0 +1,30 @@
+{
+  "extends": "expo/tsconfig.base",
+  "compilerOptions": {
+    "strict": true,
+    "noUncheckedIndexedAccess": false,
+    "jsx": "react-jsx",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "noEmit": true,
+    "paths": {
+      "@wallet/shared": [
+        "../../packages/shared/index.ts"
+      ]
+    }
+  },
+  "include": [
+    "index.ts",
+    "App.tsx",
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "../../packages/shared/index.ts",
+    "../../packages/shared/src/**/*.ts",
+    "../../packages/shared/src/**/*.tsx"
+  ],
+  "exclude": [
+    "node_modules",
+    ".expo"
+  ]
+}
